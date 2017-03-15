@@ -1,0 +1,594 @@
+<?xml version="1.0"?>
+
+<!-- Automatically generated based on file 10DeployReports.xml -->
+
+<!-- Warnings
+Report channel Reports.Channel.Optimize references report DCO.ReportsForCharts.SICategories not yet output - reordering
+-->
+
+<reports version="2.0">
+
+    <report name="DS.Report.BusinessApplicationInstanceNode">
+        <title>Shows BusinessApplicationInstance Node Attributes</title>
+        <description>Shows All Attributes of BusinessApplicationInstance Node in Data Store</description>
+        <kind>BusinessApplicationInstance</kind>
+        <show>
+            explode keys(#) PROCESS WITH unique(1)
+        </show>
+    </report>
+
+    <report name="DS.Report.SoftwareInstanceNode">
+        <title>Shows SoftwareInstance Node Attributes</title>
+        <description>Shows All Attributes of SoftwareInstance Node in Data Store</description>
+        <kind>SoftwareInstance</kind>
+        <show>
+            explode keys(#) PROCESS WITH unique(1)
+        </show>
+    </report>
+
+    <report name="DS.Report.HostNode">
+        <title>Shows Host Node Attributes</title>
+        <description>Shows All Attributes of Host Node in Data Store</description>
+        <kind>Host</kind>
+        <show>
+            explode keys(#) PROCESS WITH unique(1)
+        </show>
+    </report>
+
+    <report name="DS.Report.ClusterNode">
+        <title>Shows Cluster Node Attributes</title>
+        <description>Shows All Attributes of Cluster Node in Data Store</description>
+        <kind>Cluster</kind>
+        <show>
+            explode keys(#) PROCESS WITH unique(1)
+        </show>
+    </report>
+
+    <report name="DS.Report.HostContainerNode">
+        <title>Shows HostContainer Node Attributes</title>
+        <description>Shows All Attributes of HostContainer Node in Data Store</description>
+        <kind>HostContainer</kind>
+        <show>
+            explode keys(#) PROCESS WITH unique(1)
+        </show>
+    </report>
+
+    <report name="DS.Report.NetworkInterfaceNode">
+        <title>Shows NetworkInterface Node Attributes</title>
+        <description>Shows All Attributes of NetworkInterface Node in Data Store</description>
+        <kind>NetworkInterface</kind>
+        <show>
+            explode keys(#) PROCESS WITH unique(1)
+        </show>
+    </report>
+
+    <report name="DS.Report.SwitchNode">
+        <title>Shows Switch Node Attributes</title>
+        <description>Shows All Attributes of Switch Node in Data Store</description>
+        <kind>Switch</kind>
+        <show>
+            explode keys(#) PROCESS WITH unique(1)
+        </show>
+    </report>
+
+    <report name="DS.Report.PortInterfaceNode">
+        <title>Shows PortInterface Node Attributes</title>
+        <description>Shows All Attributes of PortInterface Node in Data Store</description>
+        <kind>PortInterface</kind>
+        <show>
+            explode keys(#) PROCESS WITH unique(1)
+        </show>
+    </report>
+
+    <report-channel name="Reports.Channel.DataStore">
+        <title>Data Store Details</title>
+        <description>Foundation Data Store Attributes</description>
+        <report>DS.Report.HostNode</report>
+        <report>DS.Report.SoftwareInstanceNode</report>
+        <report>DS.Report.BusinessApplicationInstanceNode</report>
+        <report>DS.Report.ClusterNode</report>
+        <report>DS.Report.HostContainerNode</report>
+        <report>DS.Report.NetworkInterfaceNode</report>
+        <report>DS.Report.SwitchNode</report>
+        <report>DS.Report.PortInterfaceNode</report>
+    </report-channel>
+
+    <report name="DCO.Report.AllHostData">
+        <title>Host Data</title>
+        <description>Shows all the Host data</description>
+        <kind>Host</kind>
+        <order-by>name</order-by>
+        <show>
+            name,
+            os,
+            os_type,
+            os_class,
+            os_version,
+            os_edition,
+            os_build,
+            service_pack,
+            kernel,
+            hostid,
+            num_processors,
+            processor_type,
+            num_logical_processors,
+            cores_per_processor,
+            threads_per_core,
+            ram,
+            pdc,
+            local_fqdn,
+            dns_domain,
+            domain,
+            workgroup,
+            ad_server_roles,
+            vendor,
+            model,
+            serial,
+            psu_status,
+            package_count,
+            patch_count,
+            last_update_success,
+            last_update_failure
+        </show>
+    </report>
+
+    <chart name="DCO.Chart.CPUNumDistributionColumn" default="column">
+        <title>Host CPU count Distribution</title>
+        <description>Host CPU count Distribution</description>
+        <kind>Host</kind>
+        <order-by>num_processors</order-by>
+        <split>num_processors  as "_|CPUNUM|_"</split>
+        <y-axis-title>_|Hosts|_</y-axis-title>
+        <show>
+            SUMMARY
+        </show>
+    </chart>
+
+    <report name="DCO.Report.SystemConfiguration">
+        <title>Host System Configurations</title>
+        <description>Shows the configuration of each Host</description>
+        <kind>Host</kind>
+        <order-by>name</order-by>
+        <show>
+            name as "_|Name|_",
+            num_processors as "_|Physical CPU Count|_",
+            processor_type as "_|CPU type|_",
+            ram as "_|Memory (MB)|_",
+            #Mounter:FileSystemMount:MountedFileSystem:FileSystem.df_output as "_|Disk Info|_"
+        </show>
+    </report>
+
+    <report name="DCO.Report.HostNetworkConfiguration">
+        <title>Host Network Configurations</title>
+        <description>Shows the network configuration of each Host</description>
+        <kind>Host</kind>
+        <order-by>name</order-by>
+        <show>
+            name as "_|Name|_",
+            explode #DeviceWithInterface:DeviceInterface:InterfaceOfDevice:NetworkInterface.name as '_|Interface|_',
+            #DeviceWithInterface:DeviceInterface:InterfaceOfDevice:NetworkInterface.ip_addr as "_|IP Address|_",
+            #DeviceWithInterface:DeviceInterface:InterfaceOfDevice:NetworkInterface.mac_addr as "_|MAC|_",
+            #DeviceWithInterface:DeviceInterface:InterfaceOfDevice:NetworkInterface.speed as "_|Speed|_",
+            #DeviceWithInterface:DeviceInterface:InterfaceOfDevice:NetworkInterface.duplex as "_|Duplex|_"
+        </show>
+    </report>
+
+    <report name="DCO.Report.HostNoComms">
+        <title>Hosts without Communication</title>
+        <description>Shows Hosts with no observed communication</description>
+        <kind>Host</kind>
+        <where>not #:::DiscoveryAccess.#:::NetworkConnectionList.#:::DiscoveredNetworkConnection</where>
+        <show>
+            SUMMARY
+        </show>
+    </report>
+
+    <report name="DCO.Report.HostObComms">
+        <title>Observed Communication count by Host</title>
+        <description>Shows observed communication count by Host</description>
+        <kind>Host</kind>
+        <order-by>hostname</order-by>
+        <show>
+            hostname,
+            explode #:::DiscoveryAccess.#:::NetworkConnectionList.#:::DiscoveredNetworkConnection.protocol AS protocol PROCESS WITH countUnique(1,0,0)
+        </show>
+    </report>
+
+    <report name="DCO.Report.RemoteIpCnt">
+        <title>Remote TCP/IP Incidence</title>
+        <description>Shows connection count to known hosts by remote TCP/IP Address</description>
+        <kind>Host TRAVERSE :::DiscoveryAccess TRAVERSE :::NetworkConnectionList TRAVERSE :::DiscoveredNetworkConnection where remote_ip_addr &lt;&gt; &apos;127.0.0.1&apos; and protocol = &apos;TCP&apos;</kind>
+        <show>
+            remote_ip_addr PROCESS WITH countUnique(0)
+        </show>
+    </report>
+
+    <report name="DCO.Report.RemoteIpPortCnt">
+        <title>Remote TCP/IP and Port Incidence</title>
+        <description>Shows connection count to known hosts by remote TCP/IP Address and Port</description>
+        <kind>Host TRAVERSE :::DiscoveryAccess TRAVERSE :::NetworkConnectionList TRAVERSE :::DiscoveredNetworkConnection where remote_ip_addr &lt;&gt; &apos;127.0.0.1&apos; and protocol = &apos;TCP&apos;</kind>
+        <show>
+            remote_ip_addr,
+            remote_port PROCESS WITH countUnique(0)
+        </show>
+    </report>
+
+    <report name="DCO.Report.RemoteIpFindHosts">
+        <title>Remote TCP/IP, Remote Port, Host Incidence</title>
+        <description>Shows connection count to known hosts by remote TCP/IP Address and Port with hostname</description>
+        <kind>DiscoveredNetworkConnection</kind>
+        <where>remote_ip_addr &lt;&gt; '127.0.0.1' and protocol = 'TCP' and #:::NetworkConnectionList.#:::DiscoveryAccess.#:::Host</where>
+        <show>
+            remote_ip_addr,
+            remote_port,
+            #:::NetworkConnectionList.#:::DiscoveryAccess.#:::Host.hostname as Hostname PROCESS WITH countUnique(0)
+        </show>
+    </report>
+
+    <report name="DCO.Report.RemoteIpFindHostsName">
+        <title>Conections to known hosts from a specific Remote IP</title>
+        <description>Shows list of hosts connected to from a specific Remote IP</description>
+        <kind>DiscoveredNetworkConnection</kind>
+        <where>
+            remote_ip_addr=%(opt_remote)s and #:::NetworkConnectionList.#:::DiscoveryAccess.#:::Host
+        </where>
+        <show>
+            remote_ip_addr,
+            remote_port,
+            #:::NetworkConnectionList.#:::DiscoveryAccess.#:::Host.hostname as Hostname PROCESS WITH countUnique(0)
+        </show>
+        <parameters> 
+            <parameter name="DCO_Report_RemoteIpFindHostsName_ip">
+                <title>RemoteIP</title>
+                <type name="TextField">
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>opt_remote</key>
+            </parameter>        
+        </parameters>
+    </report>
+
+    <report name="DCO.Report.HostOsVersion">
+        <title>Operating systems with version count</title>
+        <description>Shows operating systems with version count</description>
+        <kind>Host</kind>
+        <order-by>os_type</order-by>
+        <show>
+            os_type,
+            os_version PROCESS WITH countUnique(1,0,0)
+        </show>
+    </report>
+
+    <chart name="DCO.Chart.SICategoriesPie" default="pie">
+        <title>SI Category Distribution</title>
+        <description>SI Category Distribution</description>
+        <kind>SoftwareInstance</kind>
+        <order-by>(#Element:Maintainer:Pattern:Pattern.categories)</order-by>
+        <split>explode #Element:Maintainer:Pattern:Pattern.categories AS "_|CATEGORY|_"</split>
+        <y-axis-title>_|Hosts|_</y-axis-title>
+        <show>
+            SUMMARY
+        </show>
+    </chart>
+
+    <report name="DCO.Report.SITypeVersionCount">
+        <title>SI Types and version with counts</title>
+        <description>Shows software Instances with version count</description>
+        <kind>SoftwareInstance</kind>
+        <order-by>type</order-by>
+        <show>
+            type,
+            version PROCESS WITH countUnique(1,0,0)
+        </show>
+    </report>
+
+    <report name="DCO.Report.SICategoryTypeCount">
+        <title>SI Category and type with counts</title>
+        <description>Shows Software Category with type count</description>
+        <kind>SoftwareInstance</kind>
+        <order-by>(#Element:Maintainer:Pattern:Pattern.categories)</order-by>
+        <show>
+            (#Element:Maintainer:Pattern:Pattern.categories) AS Category,
+            explode type PROCESS WITH countUnique(1,0,0)
+        </show>
+    </report>
+
+    <report name="DCO.Report.CPUBasedLicense">
+        <title>CPU based License Count</title>
+        <description>Shows list of hosts supporting specific software type. This uses a drop down of all software types</description>
+        <kind>SoftwareInstance</kind>
+        <where>
+            type=%(opt_name)s
+        </where>
+        <show>
+            type,
+            version,
+            #:::Host.processor_type AS 'Processor Type',
+            #:::Host.num_processors AS 'Number of Processors',
+            #:::Host.num_logical_processors as 'Logical processors',
+            #:::Host.cores_per_processor as 'Cores per processor',
+            #:::Host.threads_per_core as 'Threads per core'
+        </show>
+        <parameters> 
+            <parameter name="DCO_Report_CPUBasedLicense_name">
+                <title>Software Type Search</title>
+                <type name="SelectField">
+                    <all>false</all>
+                    <options>
+                        <query>SEARCH SoftwareInstance SHOW type PROCESS WITH unique(1)</query>
+                    </options>
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>opt_name</key>
+            </parameter>        
+        </parameters>
+    </report>
+
+    <report name="DCO.Report.InstanceBasedLicense">
+        <title>Instance based License Count</title>
+        <description>Shows CPU count of servers for software version instance</description>
+        <kind>SoftwareInstance</kind>
+        <order-by>type</order-by>
+        <show>
+            type,
+            version PROCESS WITH countUnique(0,1,0)
+        </show>
+    </report>
+
+    <report name="DCO.Report.ProductsPerCategory">
+        <title>Observed Products in a Software Category</title>
+        <description>Shows list of Observed Products in a software Category</description>
+        <kind>Pattern</kind>
+        <where>
+            %(cat_name)s IN categories TRAVERSE Pattern:Maintainer:Element:SoftwareInstance
+        </where>
+        <show>
+            type,
+            version PROCESS WITH unique(1)
+        </show>
+        <parameters> 
+            <parameter name="Impact_Report_CatDropDown_name">
+                <title>Software Category Type</title>
+                <type name="SelectField">
+                    <all>False</all>
+                    <options>
+                        <query>SEARCH Pattern SHOW explode categories PROCESS WITH unique(1)</query>
+                    </options>
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>cat_name</key>
+            </parameter>        
+        </parameters>
+    </report>
+
+    <report name="DCO.Report.CategoryHostSummary">
+        <title>Hosts that support a Software Category</title>
+        <description>Shows Hosts that support a Software Category</description>
+        <kind>Pattern</kind>
+        <where>
+            %(cat_name)s IN categories TRAVERSE Pattern:Maintainer:Element:SoftwareInstance TRAVERSE RunningSoftware:HostedSoftware:Host:Host
+        </where>
+        <show>
+            name,
+            vendor,
+            model,
+            num_processors,
+            os,
+            os_version,
+            num_processors,
+            #:::Location.type as Type PROCESS WITH unique(1)
+        </show>
+        <parameters> 
+            <parameter name="Impact_Report_CatDropDown_name">
+                <title>Software Category Type</title>
+                <type name="SelectField">
+                    <all>False</all>
+                    <options>
+                        <query>SEARCH Pattern SHOW explode categories PROCESS WITH unique(1)</query>
+                    </options>
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>cat_name</key>
+            </parameter>        
+        </parameters>
+    </report>
+
+    <report name="DCO.Report.CategoryDropDown">
+        <title>Hosts that support a Software Product by Category</title>
+        <description>Shows list of Hosts that support a software Product by Category</description>
+        <kind>Pattern</kind>
+        <where>
+            %(cat_name)s IN categories TRAVERSE Pattern:Maintainer:Element:SoftwareInstance TRAVERSE RunningSoftware:HostedSoftware:Host:Host where os_class = %(opt_os)s
+        </where>
+        <show>
+            name,
+            #:::NetworkInterface.ip_addr as ip_addr,
+            type,
+            domain,
+            os PROCESS WITH unique(1)
+        </show>
+        <parameters> 
+            <parameter name="Impact_Report_CatDropDown_name">
+                <title>Software Category Type</title>
+                <type name="SelectField">
+                    <all>False</all>
+                    <options>
+                        <query>SEARCH Pattern SHOW explode categories PROCESS WITH unique(1)</query>
+                    </options>
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>cat_name</key>
+            </parameter>        
+            <parameter name="Impact_Report_OsDropDown_name">
+                <title>Operating System Type</title>
+                <type name="SelectField">
+                    <all>False</all>
+                    <options>
+                        <query>SEARCH Host SHOW os_class PROCESS WITH unique(1)</query>
+                    </options>
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>opt_os</key>
+            </parameter>        
+        </parameters>
+    </report>
+
+    <report name="DCO.Report.NegCategoryDropDown">
+        <title>Hosts that don&apos;t support a Software Product by Category</title>
+        <description>Shows list of Hosts that don&apos;t support a Software Product by Category</description>
+        <kind>Host</kind>
+        <where>
+            os_class = %(opt_os)s AND NODECOUNT ( TRAVERSE Host:HostedSoftware:RunningSoftware:SoftwareInstance TRAVERSE Element:Maintainer:Pattern:Pattern WHERE %(cat_name)s IN categories ) = 0
+        </where>
+        <show>
+            name,
+            #:::NetworkInterface.ip_addr as ip_addr,
+            type,
+            domain,
+            os
+        </show>
+        <parameters> 
+            <parameter name="Impact_Report_CatDropDown_name">
+                <title>Software Category Type</title>
+                <type name="SelectField">
+                    <all>False</all>
+                    <options>
+                        <query>SEARCH Pattern SHOW explode categories PROCESS WITH unique(1)</query>
+                    </options>
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>cat_name</key>
+            </parameter>        
+            <parameter name="Impact_Report_OsDropDown_name">
+                <title>Operating System Type</title>
+                <type name="SelectField">
+                    <all>False</all>
+                    <options>
+                        <query>SEARCH Host SHOW os_class PROCESS WITH unique(1)</query>
+                    </options>
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>opt_os</key>
+            </parameter>        
+        </parameters>
+    </report>
+
+    <report name="DCO.Report.ProductDropDown">
+        <title>Hosts that support a Software Product by Type</title>
+        <description>Shows list of Hosts that support a Software Product by Type</description>
+        <kind>Host</kind>
+        <where>
+            os_class = %(opt_os)s AND NOT nodecount ( TRAVERSE Host:HostedSoftware:RunningSoftware:SoftwareInstance WHERE type = %(type_name)s) = 0
+        </where>
+        <show>
+            name,
+            #:::NetworkInterface.ip_addr as ip_addr,
+            type,
+            domain,
+            os
+        </show>
+        <parameters> 
+            <parameter name="Impact_Report_TypeDropDown_name">
+                <title>Software Instance Type</title>
+                <type name="SelectField">
+                    <all>False</all>
+                    <options>
+                        <query>SEARCH SoftwareInstance SHOW type PROCESS WITH unique(1)</query>
+                    </options>
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>type_name</key>
+            </parameter>        
+            <parameter name="Impact_Report_OsDropDown_name">
+                <title>Operating System Type</title>
+                <type name="SelectField">
+                    <all>False</all>
+                    <options>
+                        <query>SEARCH Host SHOW os_class PROCESS WITH unique(1)</query>
+                    </options>
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>opt_os</key>
+            </parameter>        
+        </parameters>
+    </report>
+
+    <report name="DCO.Report.NegProductDropDown">
+        <title>Hosts that don&apos;t support a Software Product by Type</title>
+        <description>Shows list of Hosts that don&apos;t support a Software Product by Type</description>
+        <kind>Host</kind>
+        <where>
+            os_class = %(opt_os)s AND NODECOUNT (TRAVERSE Host:HostedSoftware:RunningSoftware:SoftwareInstance WHERE type = %(type_name)s ) = 0
+        </where>
+        <show>
+            name,
+            #:::NetworkInterface.ip_addr as ip_addr,
+            type,
+            domain,
+            os
+        </show>
+        <parameters> 
+            <parameter name="Impact_Report_TypeDropDown_name">
+                <title>Software Instance Type</title>
+                <type name="SelectField">
+                    <all>False</all>
+                    <options>
+                        <query>SEARCH SoftwareInstance SHOW type PROCESS WITH unique(1)</query>
+                    </options>
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>type_name</key>
+            </parameter>        
+            <parameter name="Impact_Report_OsDropDown_name">
+                <title>Operating System Type</title>
+                <type name="SelectField">
+                    <all>False</all>
+                    <options>
+                        <query>SEARCH Host SHOW os_class PROCESS WITH unique(1)</query>
+                    </options>
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>opt_os</key>
+            </parameter>        
+        </parameters>
+    </report>
+
+    <report name="DCO.ReportsForCharts.SICategories">
+        <title>SI Categories</title>
+        <description>Shows Software Categories</description>
+        <kind>SoftwareInstance</kind>
+        <order-by>(#Element:Maintainer:Pattern:Pattern.categories)</order-by>
+        <show>
+            explode #Element:Maintainer:Pattern:Pattern.categories AS "_|CATEGORY|_"
+        </show>
+    </report>
+
+    <report-channel name="Reports.Channel.Optimize">
+        <title>Data Center Optimization Details</title>
+        <description>Data Center Optimization Reports</description>
+        <report>DCO.Report.AllHostData</report>
+        <chart>DCO.Chart.CPUNumDistributionColumn</chart>
+        <report>DCO.Report.SystemConfiguration</report>
+        <report>DCO.Report.HostNetworkConfiguration</report>
+        <report>DCO.Report.HostNoComms</report>
+        <report>DCO.Report.HostObComms</report>
+        <report>DCO.Report.RemoteIpCnt</report>
+        <report>DCO.Report.RemoteIpPortCnt</report>
+        <report>DCO.Report.RemoteIpFindHosts</report>
+        <report>DCO.Report.RemoteIpFindHostsName</report>
+        <report>DCO.Report.HostOsVersion</report>
+        <report>DCO.ReportsForCharts.SICategories</report>
+        <report>DCO.Report.SITypeVersionCount</report>
+        <report>DCO.Report.SICategoryTypeCount</report>
+        <report>DCO.Report.CPUBasedLicense</report>
+        <report>DCO.Report.InstanceBasedLicense</report>
+        <report>DCO.Report.ProductsPerCategory</report>
+        <report>DCO.Report.CategoryHostSummary</report>
+        <report>DCO.Report.CategoryDropDown</report>
+        <report>DCO.Report.NegCategoryDropDown</report>
+        <report>DCO.Report.ProductDropDown</report>
+        <report>DCO.Report.NegProductDropDown</report>
+    </report-channel>
+
+
+</reports>

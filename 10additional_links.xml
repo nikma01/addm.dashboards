@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+ <reports version="2.0">
+        
+     <node-report name="Host.Node.Report.Unrecognized">
+            <title>Unrecognized Processes</title>
+            <description>Unrecognized Processes from last scan </description>
+            <kind>Host</kind>
+            <image>kind/gif/Location_16.gif</image>
+            <where keyword="False">
+                TRAVERSE InferredElement:Inference:Primary:DeviceInfo
+                TRAVERSE DiscoveryResult:DiscoveryAccessResult:DiscoveryAccess:DiscoveryAccess
+                TRAVERSE DiscoveryAccess:DiscoveryAccessResult:DiscoveryResult:ProcessList
+                TRAVERSE List:List:Member:DiscoveredProcess
+                WHERE not simple_identity and not NODECOUNT(TRAVERSE :::SoftwareInstance)
+            </where>
+            <show>
+                cmd, args, username
+            </show>
+     </node-report>
+
+     <node-report name="Host.Node.Report.UnrecognizedUnique">
+            <title>Unrecognized UniqueProcesses</title>
+            <description>Unrecognized Unique Processes from last scan </description>
+            <kind>Host</kind>
+            <image>kind/gif/Location_16.gif</image>
+            <where keyword="False">
+                TRAVERSE InferredElement:Inference:Primary:DeviceInfo
+                TRAVERSE DiscoveryResult:DiscoveryAccessResult:DiscoveryAccess:DiscoveryAccess
+                TRAVERSE DiscoveryAccess:DiscoveryAccessResult:DiscoveryResult:ProcessList
+                TRAVERSE List:List:Member:DiscoveredProcess
+                WHERE not simple_identity and not NODECOUNT(TRAVERSE :::SoftwareInstance)
+            </where>
+            <show>
+                cmd, args, username PROCESS WITH countUnique(0)
+            </show>
+     </node-report>
+ 
+     <node-report name="Host.Node.Report.Recognized">
+            <title>Recognized Processes Last Scan</title>
+            <description>Recognized Processes from last scan </description>
+            <kind>Host</kind>
+            <image>kind/gif/Location_16.gif</image>
+            <where keyword="False">
+                TRAVERSE InferredElement:Inference:Primary:DeviceInfo
+                TRAVERSE DiscoveryResult:DiscoveryAccessResult:DiscoveryAccess:DiscoveryAccess
+                TRAVERSE DiscoveryAccess:DiscoveryAccessResult:DiscoveryResult:ProcessList
+                TRAVERSE List:List:Member:DiscoveredProcess
+                WHERE simple_identity or NODECOUNT(TRAVERSE :::SoftwareInstance)
+            </where>
+            <show>
+                SUMMARY
+            </show>
+     </node-report>
+
+     <node-report name="Host.Node.Report.OnlyTaggedConnect">
+            <title>Tagged Processes with Connections - No SI</title>
+            <description>Proceses that have only been tagged and have observed network conection </description>
+            <kind>Host</kind>
+            <image>kind/gif/Location_16.gif</image>
+            <where keyword="False">
+               TRAVERSE InferredElement:Inference:Primary:DeviceInfo
+               TRAVERSE DiscoveryResult:DiscoveryAccessResult:DiscoveryAccess:DiscoveryAccess
+               TRAVERSE DiscoveryAccess:DiscoveryAccessResult:DiscoveryResult:ProcessList
+               TRAVERSE List:List:Member:DiscoveredProcess
+               WHERE (simple_identity and not NODECOUNT(TRAVERSE :::SoftwareInstance)) and NODECOUNT(TRAVERSE ProcessWithListener:ProcessListener:ListenerOfProcess:DiscoveredListeningPort)
+            </where>
+            <show>
+                SUMMARY
+            </show>
+     </node-report>
+     
+     <node-report name="Host.Node.Report.TagRecognized">
+            <title>Recognized Processes Tagged but no SI on Last Scan</title>
+            <description>Recognized Processes Tagged but no SI on Last Scan</description>
+            <kind>Host</kind>
+            <image>kind/gif/Location_16.gif</image>
+            <where keyword="False">
+                TRAVERSE InferredElement:Inference:Primary:DeviceInfo
+                TRAVERSE DiscoveryResult:DiscoveryAccessResult:DiscoveryAccess:DiscoveryAccess
+                TRAVERSE DiscoveryAccess:DiscoveryAccessResult:DiscoveryResult:ProcessList
+                TRAVERSE List:List:Member:DiscoveredProcess
+                WHERE simple_identity and not NODECOUNT(TRAVERSE :::SoftwareInstance)
+            </where>
+            <show>
+                SUMMARY
+            </show>
+     </node-report>
+
+     <node-report name="Host.Node.Report.SIRecognized">
+            <title>Recognized Processes SI but not Tagged on Last Scan</title>
+            <description>Recognized Processes SI but not Tagged on Last Scan</description>
+            <kind>Host</kind>
+            <image>kind/gif/Location_16.gif</image>
+            <where keyword="False">
+                TRAVERSE InferredElement:Inference:Primary:DeviceInfo
+                TRAVERSE DiscoveryResult:DiscoveryAccessResult:DiscoveryAccess:DiscoveryAccess
+                TRAVERSE DiscoveryAccess:DiscoveryAccessResult:DiscoveryResult:ProcessList
+                TRAVERSE List:List:Member:DiscoveredProcess
+                WHERE NODECOUNT(TRAVERSE :::SoftwareInstance) and not simple_identity
+            </where>
+            <show>
+                SUMMARY
+            </show>
+     </node-report>
+ 
+ </reports>
+ 
