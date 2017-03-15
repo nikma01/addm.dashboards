@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+
+
+<!-- Warnings
+Report channel Reports.Channel.Optimize references report DCO.ReportsForCharts.SICategories not yet output - reordering
+-->
+
+<reports version="2.0">
+
+   
+
+
+    <!--
+###################################
+#### Product IIS Channels ####
+###################################-->
+
+    <chart-multi-channel name="Channel.SWIISCpupowerRam">
+        <title>Servers: IIS Compute Power and RAM</title>
+        <description>Speed and number of CPUs vs RAM of the selected servers</description>
+        <split>
+            bin(ram/1024,
+                [               1,      2,        4,        8,        16,         32],
+                ['Less than 1 Gb', '1 Gb', '2-4 Gb', '4-8 Gb', '8-16 Gb', '16-32 Gb', '32 Gb and more']) AS 'RAM'
+        </split>
+        <split>
+            bin(processor_speed * defaultNumber((num_logical_processors OR num_processors), 1),
+                [           2020,             8000],
+                ['Small Compute', 'Medium Compute', 'Large Compute']) AS 'Compute Power'
+        </split>
+        <kind>SoftwareInstance</kind>
+        <where>
+            type='Microsoft IIS Service'
+            TRAVERSE :HostedSoftware:Host:Host
+               WHERE processor_speed
+        </where>
+        <order-by>
+            ram,
+            processor_speed * defaultNumber((num_logical_processors OR num_processors), 1) DESC
+        </order-by>
+        <show>
+            name,
+            host_type,
+            os_class,
+            os_type,
+            os_version,
+            os_edition,
+            ((virtual AND 'Virtual') OR 'Not Virtual') AS 'Virtual',
+            (vendor OR 'Not Discovered') AS 'Vendor',
+            (model OR 'Not Discovered') AS 'Model',
+            (ram OR 'Not Discovered') AS 'RAM',
+            (num_processors OR 'Not Discovered') AS 'Physical CPU',
+            (num_logical_processors OR 'Not Discovered') AS 'Logical CPU',
+            (processor_speed OR 'Not Discovered') AS 'CPU MHz',
+            (processor_type OR 'Not Discovered') AS 'CPU Type',
+            join((#OwnedItem:Ownership::Person.name OR 'None Linked'), ', ') AS 'Host Owner',
+            join((#ElementInLocation:Location:Location:Location.name OR 'None Linked'), ', ') AS 'Location',
+            join((#Host:HostedSoftware:AggregateSoftware:BusinessApplicationInstance.name OR 'None Linked'), ', ') AS 'Applications',
+            join((#InferredElement:Inference:Associate:DiscoveryAccess.endpoint OR 'DDD Aged Out'), ', ') AS 'Scanned Via'
+        </show>
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.SWIISVersion" default="column_nolegend">
+        <title>Servers: IIS Versions</title>
+        <description>Product and full version of selected instances</description>
+        <split>(product_version or 'Unknown') AS 'Version'</split>
+        <split>(version or 'Unknown')</split>
+        <kind>SoftwareInstance</kind>
+        <where>type='Microsoft IIS Service'</where>
+        <order-by>
+            product_version,
+            version
+        </order-by>
+        <show>
+            type,
+            name,
+            product_version,
+            version,
+            #:HostedSoftware:Host:Host.name AS 'Host'
+        </show>
+    </chart-multi-channel>
+
+    <chart-channel name="Channel.SWIISHostOSTypeOverTime" default="pie">
+        <title>Servers: IIS By Operating System</title>
+        <description>Application server instances by OS</description>
+        <split>os_type</split>
+        <kind>SoftwareInstance</kind>
+        <where>type='Microsoft IIS Service' TRAVERSE :HostedSoftware:Host:Host</where>
+        <order-by>os_type</order-by>
+        <show>
+            name,
+            host_type,
+            os_class,
+            os_type,
+            os_version,
+            os_edition,
+            ((virtual AND 'Virtual') OR 'Not Virtual') AS 'Virtual',
+            (vendor OR 'Not Discovered') AS 'Vendor',
+            (model OR 'Not Discovered') AS 'Model',
+            (ram OR 'Not Discovered') AS 'RAM',
+            (num_processors OR 'Not Discovered') AS 'Physical CPU',
+            (processor_type OR 'Not Discovered') AS 'CPU Type',
+            join((#OwnedItem:Ownership::Person.name OR 'None Linked'), ', ') AS 'Host Owner',
+            join((#ElementInLocation:Location:Location:Location.name OR 'None Linked'), ', ') AS 'Location',
+            join((#Host:HostedSoftware:AggregateSoftware:BusinessApplicationInstance.name OR 'None Linked'), ', ') AS 'Applications',
+            join((#InferredElement:Inference:Associate:DiscoveryAccess.endpoint OR 'DDD Aged Out'), ', ') AS 'Scanned Via'
+        </show>
+    </chart-channel>
+
+    <chart-channel name="Channel.SWIISVirtualVsReal" default="pie">
+        <title>Servers: IIS Virtual vs. Physical</title>
+        <description>Application server instances Virtual vs. Physical</description>
+        <split>booleanLabels(virtual, "Virtual", "Not Virtual", "Not Virtual")</split>
+        <kind>SoftwareInstance</kind>
+        <where>type='Microsoft IIS Service' TRAVERSE :HostedSoftware:Host:Host</where>
+        <order-by>virtual</order-by>
+        <show>
+            name,
+            host_type,
+            os_class,
+            os_type,
+            os_version,
+            os_edition,
+            ((virtual AND 'Virtual') OR 'Not Virtual') AS 'Virtual',
+            (vendor OR 'Not Discovered') AS 'Vendor',
+            (model OR 'Not Discovered') AS 'Model',
+            (ram OR 'Not Discovered') AS 'RAM',
+            (num_processors OR 'Not Discovered') AS 'Physical CPU',
+            (processor_type OR 'Not Discovered') AS 'CPU Type',
+            join((#OwnedItem:Ownership::Person.name OR 'None Linked'), ', ') AS 'Host Owner',
+            join((#ElementInLocation:Location:Location:Location.name OR 'None Linked'), ', ') AS 'Location',
+            join((#Host:HostedSoftware:AggregateSoftware:BusinessApplicationInstance.name OR 'None Linked'), ', ') AS 'Applications',
+            join((#InferredElement:Inference:Associate:DiscoveryAccess.endpoint OR 'DDD Aged Out'), ', ') AS 'Scanned Via'
+        </show>
+    </chart-channel>
+
+	
+    <!-- SetupHome channels are configured dynamically from the loaded
+         modules. Any definition here will be ignored!
+      -->
+</reports>

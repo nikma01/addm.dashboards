@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+
+<!-- Warnings
+Report channel Reports.Channel.Optimize references report DCO.ReportsForCharts.SICategories not yet output - reordering
+-->
+
+<reports version="2.0">
+
+   
+
+
+    <!--
+###########################################
+#### Product SoftwareInstances Channels ####
+###########################################-->
+
+    <chart-multi-channel name="Channel.SWSIVersion" default="column_nolegend">
+        <title>Software AppServers SI by Pattern</title>
+        <description>
+            SI by Pattern Category Application Server Software Platforms Numbers and version
+        </description>
+        <split>type</split>
+        <split>(product_version or 'Unknown')</split>
+        <kind>Pattern</kind>
+        <where>
+            'Application Server Software Platforms' in categories
+            TRAVERSE Pattern:Maintainer:Element:SoftwareInstance
+        </where>
+        <show>SUMMARY</show>
+    </chart-multi-channel>
+
+	
+    <!-- SetupHome channels are configured dynamically from the loaded
+         modules. Any definition here will be ignored!
+      -->
+</reports>

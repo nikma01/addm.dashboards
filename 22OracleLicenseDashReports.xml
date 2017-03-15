@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+
+
+
+<reports version="2.0">
+
+
+    <report name="Lic.Report.OracleProcs">
+        <title>Oracle License Report</title>
+        <description>Shows Oracle License Info</description>
+        <kind>SoftwareInstance</kind>
+        <where> type = "Oracle Database Server" </where>
+        <order-by>#RunningSoftware:HostedSoftware:Host:Host.hostname</order-by>
+        <show>
+            version, 
+            instance, 
+            #RunningSoftware:HostedSoftware:Host:Host.hostname, 
+            #RunningSoftware:HostedSoftware:Host:Host.num_processors as "Physical Processors", 
+            #RunningSoftware:HostedSoftware:Host:Host.cores_per_processor as "Cores",
+            #RunningSoftware:HostedSoftware:Host:Host.num_logical_processors as "Logical Proccessors"
+        </show>
+    </report>
+
+    <chart name="Lic.Report.OracleLogicalProcs" default="pie">
+        <title>Oracle Logical Processors</title>
+        <description>Oracle Logical Processors</description>
+        <kind>SoftwareInstance where type = "Oracle Database Server" traverse RunningSoftware:HostedSoftware:Host:Host</kind>
+        <order-by>num_logical_processors</order-by>
+        <split> num_logical_processors as "_|Logical Processors|_" </split>
+        <y-axis-title>_|Count|_</y-axis-title>
+        <show>
+           SUMMARY
+        </show>
+    </chart>
+    
+    <chart name="Lic.Report.OraclePhysicalProc" default="pie">
+        <title>Oracle Physical Processors</title>
+        <description>Oracle Physical Processors</description>
+        <kind>SoftwareInstance where type = "Oracle Database Server" traverse RunningSoftware:HostedSoftware:Host:Host</kind>
+        <order-by>num_processors</order-by>
+        <split> num_processors as "_|Physical Processors|_" </split>
+        <y-axis-title>_|Count|_</y-axis-title>
+        <show>
+           SUMMARY
+        </show>
+    </chart>
+    
+    <report-channel name="Reports.Channel.OracleLicense">
+        <title>Oracle License Reports</title>
+        <description>Oracle License Reports</description>
+        <report>Lic.Report.OracleProcs</report>
+        <chart>Lic.Report.OracleLogicalProcs</chart>
+        <chart>Lic.Report.OraclePhysicalProc</chart>
+    </report-channel>
+
+
+</reports>

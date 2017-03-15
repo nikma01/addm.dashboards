@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+
+
+<!-- Warnings
+Report channel Reports.Channel.Optimize references report DCO.ReportsForCharts.SICategories not yet output - reordering
+-->
+
+<reports version="2.0">
+
+   
+
+
+    <!--
+###########################################
+#### Product AppServers ADD Reports    ####
+###########################################-->
+
+    <time-series-channel name="Channel.SWAppServersCountTime" time-series="7">
+        <title>Servers: ApplicationServers Count Over Time</title>
+        <description>ApplicationServers count over time</description>
+		<split>type as "TYPE"</split>
+        <kind>SoftwareInstance</kind>
+        <where>
+			type MATCHES 'BMC Remedy AR System Server'
+			OR MATCHES 'Apache Webserver' 
+			OR type = 'Apache Tomcat Application Server'
+			OR type = 'Apache HTTPD-based Webserver'
+			OR type = 'Microsoft IIS Service' 
+			OR type = 'IBM WebSphere Application Server'
+			OR type = 'BEA WebLogic Application Server' 
+			OR type = 'RedHat JBoss Application Server'
+			OR type = 'SAP Application Server'
+        </where>
+        <order-by>type</order-by>
+        <show>
+            type,
+            name,
+            product_version,
+            version,
+            #:HostedSoftware:Host:Host.name AS 'Host'
+        </show>
+    </time-series-channel>
+
+
+    <time-series-channel name="Channel.SWInstancesOverTime" time-series="7">
+        <title>Software AppServers Over Time</title>
+        <description>Common AppServers Over Time</description>
+        <split>type as "Type"</split>
+        <kind>SoftwareInstance</kind>
+        <where>
+            type MATCHES 'BMC Remedy AR System Server'
+			OR type = "Apache Webserver"
+			OR type = "Apache Tomcat Application Server"
+			OR type = 'Apache HTTPD-based Webserver'
+			OR type = "BEA WebLogic Application Server"
+			OR type = "IBM WebSphere Application Server"
+			OR type = "RedHat JBoss Application Server"
+			OR type = "SAP Application Server"
+			OR type = "Microsoft IIS Service"
+		</where>
+        <order-by>type</order-by>
+        <show>
+            name,
+			type,
+            product_version,
+            version,
+            #:HostedSoftware:Host:Host.name AS 'Host'
+        </show>
+    </time-series-channel>
+	
+	
+    <!-- SetupHome channels are configured dynamically from the loaded
+         modules. Any definition here will be ignored!
+      -->
+</reports>

@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+
+<reports version="2.0">
+
+<!--
+    #########################################################################
+    #########################################################################
+    #########################################################################
+
+        PAGE SETUP - WHICH CHANNELS GO ON WHICH PAGES
+        The is the 8.3 Variant (As per the 8.3 Beta release
+        
+    *****YOU NEED TO UPGRADE THIS SECTION WHEN THE PRODUCT IS UPGRADED*******
+    *****IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT IMPORTANT  *******
+    *****THIS FILE OVERWRITES THE DEFAULT REPORTS (THIS IS NOT MERGED)*******
+    
+    #########################################################################
+    #########################################################################
+    #########################################################################
+    -->
+
+    <page name="Reports">
+		    <!-- PAUL STUFF BELOW -->
+		    <channel>Reports.Channel.Optimize</channel>
+		    <channel>Reports.Channel.PNP</channel>
+		    <!-- PAUL STUFF ABOVE -->
+        <channel>Reports.Channel.OperationalIntegrity</channel>
+        <channel>Reports.Channel.FoundationDeployment</channel>
+        <channel>Reports.Channel.ChangeControl</channel>
+        <channel>DataCentreStand.Channel.DataCentreStandardizationSoftware</channel>
+        <channel>Reports.Channel.Software</channel>
+        <channel>DataCentreStand.Channel.DataCentreStandardizationReports</channel>
+        <channel>DataCentreStand.Channel.DataCentreStandardizationCharts</channel>
+        <channel>Resiliency.Channel.HostResiliencyServices</channel>
+        <channel>Resiliency.Channel.HostResiliencyPatches</channel>
+        <channel>Resiliency.Channel.HostResiliencyKernel</channel>
+    </page>
+
+
+</reports>

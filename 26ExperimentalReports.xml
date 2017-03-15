@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+
+
+<reports version="2.0">
+
+
+  <report name="DS.Report.HostAll">
+        <title>Experimental Host Show All Info</title>
+        <description>Shows All Host Information</description>
+        <kind>Host</kind>
+        <show>*</show>
+  </report>
+
+  <report name="DS.Report.HostProcess">
+        <title>Experimental Host Show Process</title>
+        <description>Show Process and Attributes</description>
+        <kind>DiscoveredProcess</kind>
+		<where>#Member:List:List:ProcessList.#DiscoveryResult:DiscoveryAccessResult:DiscoveryAccess:DiscoveryAccess._last_marker</where>
+        <show>cmd,args,username,#Member:List:List:ProcessList.#DiscoveryResult:DiscoveryAccessResult:DiscoveryAccess:DiscoveryAccess.#DiscoveryAccess:DiscoveryAccessResult:DiscoveryResult:DeviceInfo.hostname as 'Hostname',#:Inference:InferredElement:SoftwareInstance.name as "SI"</show>
+  </report>
+
+   
+    <report-channel name="Reports.Channel.HostAll">
+        <title>.Experimental Host Reports</title>
+        <description>Experimental Host Reports</description>
+        <report>DS.Report.HostAll</report>
+        <report>DS.Report.HostProcess</report>
+    </report-channel>
+
+
+</reports>

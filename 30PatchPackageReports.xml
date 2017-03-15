@@ -1,0 +1,509 @@
+<?xml version="1.0"?>
+
+<!-- PNP Patch n Package Custom Reports -->
+
+
+<reports version="2.0">
+
+<!--
+#######################################################################################################################################
+# PATCHES
+#######################################################################################################################################
+-->
+
+<!-- 
+################################################
+# Select Patches by Entered host, Date Range   #
+################################################
+ -->  
+    <report name="PNP.Report.PatchByHostDateEntry">
+        <!-- This report is used by the UI -->
+        <title>View Patches by named host and first discovery time</title>
+        <description>View Patches installed is a specific time window, for a specific host</description>
+        <kind>Host</kind>
+        <where keyword="False">
+        	      where name=%(host_name)s
+        	      step in Host:HostedSoftware:InstalledSoftware:Patch 
+                where createdDuring(#, %(from)d, %(to)d)
+        </where>
+        <show>
+        	     friendlyTime(creationTime(#)) as "First seen",
+               #:InstalledSoftware:Patch.name as "Patch name",
+               #:InstalledSoftware:Patch.version as "Patch version",
+               #:InstalledSoftware:Patch.os as "Patch OS",
+        	     #:Host:Host.name as "Host name" 
+        </show>
+        <imports>
+            <import>common.timeutil</import>
+        </imports>
+        <parameters>
+
+            <parameter name="PNP_HostnameEntry">
+                <title>Host Name</title>
+                <type name="TextField">
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>host_name</key>
+            </parameter>
+
+            <parameter name="PNP_Patch_starttime">
+                <title>Start Date</title>
+                <type name="DateField">
+                    <convert>common.timeutil.convertFromUnix</convert>
+                    <default>
+                        common.timeutil.convertToUnix(common.timeutil.currentTime() - common.timeutil.ONE_DAY)
+                    </default>
+                </type>
+                <key>from</key>
+            </parameter>
+            
+            <parameter name="PNP_Patch_endtime">
+                <title>End Date</title>
+                <type name="DateField">
+                    <convert>common.timeutil.convertFromUnix</convert>
+                    <default>common.timeutil.convertToUnix(common.timeutil.currentTime())</default>
+                </type>
+                <key>to</key>
+            </parameter>
+        </parameters>
+    </report>
+
+
+<!-- 
+################################################
+# Select Patches by Selected host, Date Range  #
+################################################
+ -->  
+ 
+    <report name="PNP.Report.PatchByHostDateSelect">
+        <!-- This report is used by the UI -->
+        <title>View Patches by selected host and first discovery time</title>
+        <description>View Patches installed is a specific time window, for a specific host</description>
+        <kind>Host</kind>
+        <where keyword="False">
+        	      where name=%(host_name)s
+        	      step in Host:HostedSoftware:InstalledSoftware:Patch 
+                where createdDuring(#, %(from)d, %(to)d)
+        </where>
+        <show>
+        	     friendlyTime(creationTime(#)) as "First seen",
+               #:InstalledSoftware:Patch.name as "Patch name",
+               #:InstalledSoftware:Patch.version as "Patch version",
+               #:InstalledSoftware:Patch.os as "Patch OS",
+        	     #:Host:Host.name as "Host name" 
+        </show>
+        <imports>
+            <import>common.timeutil</import>
+        </imports>
+        <parameters>
+
+            <parameter name="PNP_HostnameDropDown">
+                <title>Host Name</title>
+                <type name="SelectField">
+                    <all>False</all>
+                    <options>
+                        <query>
+                            SEARCH Host
+                            SHOW name
+                            PROCESS WITH unique(1)
+                        </query>
+                    </options>
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>host_name</key>
+            </parameter>
+
+            <parameter name="PNP_Patch_starttime">
+                <title>Start Date</title>
+                <type name="DateField">
+                    <convert>common.timeutil.convertFromUnix</convert>
+                    <default>
+                        common.timeutil.convertToUnix(common.timeutil.currentTime() - common.timeutil.ONE_DAY)
+                    </default>
+                </type>
+                <key>from</key>
+            </parameter>
+            
+            <parameter name="PNP_Patch_endtime">
+                <title>End Date</title>
+                <type name="DateField">
+                    <convert>common.timeutil.convertFromUnix</convert>
+                    <default>common.timeutil.convertToUnix(common.timeutil.currentTime())</default>
+                </type>
+                <key>to</key>
+            </parameter>
+        </parameters>
+    </report>
+
+<!-- 
+################################################
+# Select Patches by Patch Name, and Date Range #
+################################################
+ -->  
+ 
+    <report name="PNP.Report.PatchByPatchDateEntry">
+        <!-- This report is used by the UI -->
+        <title>View Patch by name and first discovery time</title>
+        <description>View named Patch installed is a specific time window</description>
+        <kind>Host</kind>
+        <where keyword="False">
+        	      step in Host:HostedSoftware:InstalledSoftware:Patch 
+                where createdDuring(#, %(from)d, %(to)d)
+                and #:InstalledSoftware:Patch.name = %(patch_name)s 
+        </where>
+        <show>
+        	     friendlyTime(creationTime(#)) as "First seen",
+               #:InstalledSoftware:Patch.name as "Patch name",
+               #:InstalledSoftware:Patch.version as "Patch version",
+               #:InstalledSoftware:Patch.os as "Patch OS",
+        	     #:Host:Host.name as "Host name" 
+        </show>
+        <imports>
+            <import>common.timeutil</import>
+        </imports>
+        <parameters>
+
+            <parameter name="PNP_PatchNameEntry">
+                <title>Patch Name</title>
+                <type name="TextField">
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>patch_name</key>
+            </parameter>
+
+            <parameter name="PNP_Patch_starttime">
+                <title>Start Date</title>
+                <type name="DateField">
+                    <convert>common.timeutil.convertFromUnix</convert>
+                    <default>
+                        common.timeutil.convertToUnix(common.timeutil.currentTime() - common.timeutil.ONE_DAY)
+                    </default>
+                </type>
+                <key>from</key>
+            </parameter>
+            
+            <parameter name="PNP_Patch_endtime">
+                <title>End Date</title>
+                <type name="DateField">
+                    <convert>common.timeutil.convertFromUnix</convert>
+                    <default>common.timeutil.convertToUnix(common.timeutil.currentTime())</default>
+                </type>
+                <key>to</key>
+            </parameter>
+        </parameters>
+    </report>
+
+
+<!-- 
+################################################
+# Select Patches by  Date Range Alone          #
+################################################
+ -->  
+ 
+    <report name="PNP.Report.PatchByDateEntry">
+        <!-- This report is used by the UI -->
+        <title>View Patches by first discovery time</title>
+        <description>View Patches installed is a specific time window</description>
+        <kind>Host</kind>
+        <where keyword="False">
+        	      step in Host:HostedSoftware:InstalledSoftware:Patch 
+                where createdDuring(#, %(from)d, %(to)d)
+        </where>
+        <show>
+        	     friendlyTime(creationTime(#)) as "First seen",
+               #:InstalledSoftware:Patch.name as "Patch name",
+               #:InstalledSoftware:Patch.version as "Patch version",
+               #:InstalledSoftware:Patch.os as "Patch OS",
+        	     #:Host:Host.name as "Host name" 
+        </show>
+        <imports>
+            <import>common.timeutil</import>
+        </imports>
+        <parameters>
+
+            <parameter name="PNP_Patch_starttime">
+                <title>Start Date</title>
+                <type name="DateField">
+                    <convert>common.timeutil.convertFromUnix</convert>
+                    <default>
+                        common.timeutil.convertToUnix(common.timeutil.currentTime() - common.timeutil.ONE_DAY)
+                    </default>
+                </type>
+                <key>from</key>
+            </parameter>
+            
+            <parameter name="PNP_Patch_endtime">
+                <title>End Date</title>
+                <type name="DateField">
+                    <convert>common.timeutil.convertFromUnix</convert>
+                    <default>common.timeutil.convertToUnix(common.timeutil.currentTime())</default>
+                </type>
+                <key>to</key>
+            </parameter>
+        </parameters>
+    </report>
+
+
+<!--
+#######################################################################################################################################
+# NOW PACKAGES
+#######################################################################################################################################
+-->
+
+Host Name/Package Name /Version Revision /architecture/ Operating System /Discovered Date
+
+<!-- 
+#################################################
+# Select Packages by Entered host, Date Range   #
+#################################################
+ -->  
+    <report name="PNP.Report.PackageByHostDateEntry">
+        <!-- This report is used by the UI -->
+        <title>View Packages by named host and first discovery time</title>
+        <description>View Packages installed is a specific time window, for a specific host</description>
+        <kind>Host</kind>
+        <where keyword="False">
+        	      where name=%(host_name)s
+        	      step in Host:HostedSoftware:InstalledSoftware:Package 
+                where createdDuring(#, %(from)d, %(to)d)
+        </where>
+        <show>
+        	     friendlyTime(creationTime(#)) as "First seen",
+               #:InstalledSoftware:Package.name as "Package name",
+               #:InstalledSoftware:Package.version as "Package version",
+               #:InstalledSoftware:Package.revision as "Package revision",
+               #:InstalledSoftware:Package.arch as "Package Arch",
+        	     #:Host:Host.name as "Host name" 
+        </show>
+        <imports>
+            <import>common.timeutil</import>
+        </imports>
+        <parameters>
+
+            <parameter name="PNP_HostnameEntry">
+                <title>Host Name</title>
+                <type name="TextField">
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>host_name</key>
+            </parameter>
+
+            <parameter name="PNP_Package_starttime">
+                <title>Start Date</title>
+                <type name="DateField">
+                    <convert>common.timeutil.convertFromUnix</convert>
+                    <default>
+                        common.timeutil.convertToUnix(common.timeutil.currentTime() - common.timeutil.ONE_DAY)
+                    </default>
+                </type>
+                <key>from</key>
+            </parameter>
+            
+            <parameter name="PNP_Package_endtime">
+                <title>End Date</title>
+                <type name="DateField">
+                    <convert>common.timeutil.convertFromUnix</convert>
+                    <default>common.timeutil.convertToUnix(common.timeutil.currentTime())</default>
+                </type>
+                <key>to</key>
+            </parameter>
+        </parameters>
+    </report>
+
+
+<!-- 
+#################################################
+# Select Packages by Selected host, Date Range  #
+#################################################
+ -->  
+ 
+    <report name="PNP.Report.PackageByHostDateSelect">
+        <!-- This report is used by the UI -->
+        <title>View Packages by selected host and first discovery time</title>
+        <description>View Packages installed is a specific time window, for a specific host</description>
+        <kind>Host</kind>
+        <where keyword="False">
+        	      where name=%(host_name)s
+        	      step in Host:HostedSoftware:InstalledSoftware:Package 
+                where createdDuring(#, %(from)d, %(to)d)
+        </where>
+        <show>
+        	     friendlyTime(creationTime(#)) as "First seen",
+               #:InstalledSoftware:Package.name as "Package name",
+               #:InstalledSoftware:Package.version as "Package version",
+               #:InstalledSoftware:Package.revision as "Package revision",
+               #:InstalledSoftware:Package.arch as "Package Arch",
+        	     #:Host:Host.name as "Host name" 
+        </show>
+        <imports>
+            <import>common.timeutil</import>
+        </imports>
+        <parameters>
+
+            <parameter name="PNP_HostnameDropDown">
+                <title>Host Name</title>
+                <type name="SelectField">
+                    <all>False</all>
+                    <options>
+                        <query>
+                            SEARCH Host
+                            SHOW name
+                            PROCESS WITH unique(1)
+                        </query>
+                    </options>
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>host_name</key>
+            </parameter>
+
+            <parameter name="PNP_Package_starttime">
+                <title>Start Date</title>
+                <type name="DateField">
+                    <convert>common.timeutil.convertFromUnix</convert>
+                    <default>
+                        common.timeutil.convertToUnix(common.timeutil.currentTime() - common.timeutil.ONE_DAY)
+                    </default>
+                </type>
+                <key>from</key>
+            </parameter>
+            
+            <parameter name="PNP_Package_endtime">
+                <title>End Date</title>
+                <type name="DateField">
+                    <convert>common.timeutil.convertFromUnix</convert>
+                    <default>common.timeutil.convertToUnix(common.timeutil.currentTime())</default>
+                </type>
+                <key>to</key>
+            </parameter>
+        </parameters>
+    </report>
+
+<!-- 
+################################################
+# Select Packages by Package Name, and Date Range #
+################################################
+ -->  
+ 
+    <report name="PNP.Report.PackageByPackageDateEntry">
+        <!-- This report is used by the UI -->
+        <title>View Package by name and first discovery time</title>
+        <description>View named Package installed is a specific time window</description>
+        <kind>Host</kind>
+        <where keyword="False">
+        	      step in Host:HostedSoftware:InstalledSoftware:Package 
+                where createdDuring(#, %(from)d, %(to)d)
+                and #:InstalledSoftware:Package.name = %(Package_name)s 
+        </where>
+        <show>
+        	     friendlyTime(creationTime(#)) as "First seen",
+               #:InstalledSoftware:Package.name as "Package name",
+               #:InstalledSoftware:Package.version as "Package version",
+               #:InstalledSoftware:Package.revision as "Package revision",
+               #:InstalledSoftware:Package.arch as "Package Arch",
+        	     #:Host:Host.name as "Host name" 
+        </show>
+        <imports>
+            <import>common.timeutil</import>
+        </imports>
+        <parameters>
+
+            <parameter name="PNP_PackageNameEntry">
+                <title>Package Name</title>
+                <type name="TextField">
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>Package_name</key>
+            </parameter>
+
+            <parameter name="PNP_Package_starttime">
+                <title>Start Date</title>
+                <type name="DateField">
+                    <convert>common.timeutil.convertFromUnix</convert>
+                    <default>
+                        common.timeutil.convertToUnix(common.timeutil.currentTime() - common.timeutil.ONE_DAY)
+                    </default>
+                </type>
+                <key>from</key>
+            </parameter>
+            
+            <parameter name="PNP_Package_endtime">
+                <title>End Date</title>
+                <type name="DateField">
+                    <convert>common.timeutil.convertFromUnix</convert>
+                    <default>common.timeutil.convertToUnix(common.timeutil.currentTime())</default>
+                </type>
+                <key>to</key>
+            </parameter>
+        </parameters>
+    </report>
+
+
+<!-- 
+################################################
+# Select Packagees by  Date Range Alone          #
+################################################
+ -->  
+ 
+    <report name="PNP.Report.PackageByDateEntry">
+        <!-- This report is used by the UI -->
+        <title>View Packages by first discovery time</title>
+        <description>View Packages installed is a specific time window</description>
+        <kind>Host</kind>
+        <where keyword="False">
+        	      step in Host:HostedSoftware:InstalledSoftware:Package 
+                where createdDuring(#, %(from)d, %(to)d)
+        </where>
+        <show>
+        	     friendlyTime(creationTime(#)) as "First seen",
+               #:InstalledSoftware:Package.name as "Package name",
+               #:InstalledSoftware:Package.version as "Package version",
+               #:InstalledSoftware:Package.revision as "Package revision",
+               #:InstalledSoftware:Package.arch as "Package Arch",
+        	     #:Host:Host.name as "Host name" 
+        </show>
+        <imports>
+            <import>common.timeutil</import>
+        </imports>
+        <parameters>
+
+            <parameter name="PNP_Package_starttime">
+                <title>Start Date</title>
+                <type name="DateField">
+                    <convert>common.timeutil.convertFromUnix</convert>
+                    <default>
+                        common.timeutil.convertToUnix(common.timeutil.currentTime() - common.timeutil.ONE_DAY)
+                    </default>
+                </type>
+                <key>from</key>
+            </parameter>
+            
+            <parameter name="PNP_Package_endtime">
+                <title>End Date</title>
+                <type name="DateField">
+                    <convert>common.timeutil.convertFromUnix</convert>
+                    <default>common.timeutil.convertToUnix(common.timeutil.currentTime())</default>
+                </type>
+                <key>to</key>
+            </parameter>
+        </parameters>
+    </report>
+
+
+    <report-channel name="Reports.Channel.PNP">
+        <title>Patch and Package Reports</title>
+        <description>Host Patch and Package Addition Reports</description>
+        <report>Infrastructure.Reports.NewPatch</report>
+        <report>Infrastructure.Reports.NewPatchLink</report>      
+        <report>PNP.Report.PatchByHostDateEntry</report>
+        <report>PNP.Report.PatchByHostDateSelect</report>
+        <report>PNP.Report.PatchByPatchDateEntry</report>
+        <report>PNP.Report.PatchByDateEntry</report>
+        <report>Infrastructure.Reports.NewPackage</report>
+        <report>Infrastructure.Reports.NewPackageLink</report>
+        <report>PNP.Report.PackageByHostDateEntry</report>
+        <report>PNP.Report.PackageByHostDateSelect</report>
+        <report>PNP.Report.PackageByPackageDateEntry</report>
+        <report>PNP.Report.PackageByDateEntry</report>  
+    </report-channel>
+
+</reports>

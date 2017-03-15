@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+
+
+<!-- Warnings
+Report channel Reports.Channel.Optimize references report DCO.ReportsForCharts.SICategories not yet output - reordering
+-->
+
+<reports version="2.0">
+
+   
+
+
+    <!--
+###########################################
+#### Server Uptime Reports        ####
+###########################################-->
+
+    <chart-channel name="Channel.RuntimeJava" default="pie">
+        <title>Runtime Environment Java Virtual Machine</title>
+        <description>Product and full version of selected instances</description>
+        <split>publisher</split>
+        <split>product_version</split>
+        <kind>RuntimeEnvironment</kind>
+        <where>
+		type = 'Java Virtual Machine'
+		</where>
+        <order-by>
+        type
+        </order-by>
+        <show>
+		type, product_version, publisher, #RunningSoftware:HostedSoftware:Host:Host.hostname as Hostname, #RunningSoftware:HostedSoftware:Host:Host.host_type as 'Host Type', #RunningSoftware:HostedSoftware:Host:Host.name as Name, #RunningSoftware:HostedSoftware:Host:Host.hostname as Hostname, #RunningSoftware:HostedSoftware:Host:Host.os as OS, #RunningSoftware:HostedSoftware:Host:Host.os_type as 'OS Type', #RunningSoftware:HostedSoftware:Host:Host.os_version as 'OS Version'
+         </show>
+    </chart-channel>
+
+    <chart-channel name="Channel.RuntimeDotNet" default="pie">
+        <title>Runtime Environment Microsoft .NET Runtime</title>
+        <description>Product and full version of selected instances</description>
+        <split>product_version</split>
+        <kind>RuntimeEnvironment</kind>
+        <where>
+		type = 'Microsoft .NET Runtime'
+		</where>
+        <order-by>
+        type
+        </order-by>
+        <show>
+		type, product_version, #RunningSoftware:HostedSoftware:Host:Host.hostname as Hostname, #RunningSoftware:HostedSoftware:Host:Host.host_type as 'Host Type', #RunningSoftware:HostedSoftware:Host:Host.name as Name, #RunningSoftware:HostedSoftware:Host:Host.hostname as Hostname, #RunningSoftware:HostedSoftware:Host:Host.os as OS, #RunningSoftware:HostedSoftware:Host:Host.os_type as 'OS Type', #RunningSoftware:HostedSoftware:Host:Host.os_version as 'OS Version'
+         </show>
+    </chart-channel>
+
+	
+	
+    <!-- SetupHome channels are configured dynamically from the loaded
+         modules. Any definition here will be ignored!
+      -->
+</reports>

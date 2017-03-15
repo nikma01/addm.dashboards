@@ -1,0 +1,996 @@
+﻿<?xml version="1.0"?>
+
+<!-- Automatically generated based on file 20DeployDashReports.xml -->
+
+<!-- Warnings
+Chart DQ.Report.BadCredOSTypeColumn : report DQ.ReportsForCharts.BadCredOSType already used by previous chart - skipping
+Chart DQ.Report.GoodOSTypeDistributionColumn : report DQ.ReportsForCharts.GoodOSTypeDistribution already used by previous chart - skipping
+Chart DQ.Report.SkippedOSTypeDistributionColumn : report DQ.ReportsForCharts.SkippedOSTypeDistribution already used by previous chart - skipping
+-->
+
+<reports version="2.0">
+
+    <chart name="DQ.Report.EndpointDistributionPie" default="pie">
+        <title>Endpoint OS Distribution - Last Access</title>
+        <description>Step0 Endpoint OS Distribution - Last Access</description>
+        <kind>DiscoveryAccess WHERE _last_marker AND #:::DeviceInfo.os_type is defined</kind>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <split> #:::DeviceInfo.os_type as "_|OS Type|_" </split>
+        <y-axis-title>_|Count|_</y-axis-title>
+        <show>
+            SUMMARY
+        </show>
+    </chart>
+
+    <report name="DQ.Report.BadCredNodes">
+        <title>Endpoints with credential failure - last Access</title>
+        <description>Shows endpoint authentication failures</description>
+        <kind>DeviceInfo</kind>
+        <where>#:::DiscoveryAccess.end_state &lt;&gt; "GoodAccess" AND #:::DiscoveryAccess.result &lt;&gt; "Skipped" AND #:::DiscoveryAccess.result &lt;&gt; "NoResponse" AND #:::DiscoveryAccess._last_marker </where>
+        <order-by>#:::DiscoveryAccess.endpoint</order-by>
+        <show>
+            #:::DiscoveryAccess.endpoint AS IP_Addr,
+            #:::DiscoveryAccess.result AS Result,
+            #:::DiscoveryAccess.reason AS Reason,
+            last_access_method as AccessMethod,
+            os as os,
+            domain as Domain,
+            hostname as hostname,
+            #:::Host.hostname as HostHostname
+        </show>
+    </report>
+
+    <chart name="DQ.Report.BadCredOSTypePie" default="pie">
+        <title>Endpoints with credential failure OS Distribution - Last Access</title>
+        <description>Endpoints with credential failure OS Distribution - Last Access</description>
+        <kind>DeviceInfo WHERE #:::DiscoveryAccess.result &lt;&gt; "NoResponse" AND #:::DiscoveryAccess.result &lt;&gt; "Skipped" AND #:::DiscoveryAccess.end_state &lt;&gt; "GoodAccess" AND #:::DiscoveryAccess._last_marker</kind>
+        <order-by>os_type</order-by>
+        <split> os_type as "_|OS Type|_" </split>
+        <y-axis-title>_|Count|_</y-axis-title>
+        <show>
+           SUMMARY
+        </show>
+    </chart>
+
+    <report name="DQ.Report.AccessMethods">
+        <title>Access Methods - Last Access</title>
+        <description>Shows Access Methods from last discovery</description>
+        <kind>DeviceInfo</kind>
+        <where> #:::DiscoveryAccess._last_marker AND last_access_method </where>
+        <order-by>#:::DiscoveryAccess.endpoint</order-by>
+        <show>
+            #:::DiscoveryAccess.endpoint AS IP_Addr,
+            #:::DiscoveryAccess.#:::NetworkConnectionList.failure_reason AS Result,
+            last_access_method as AccessMethod,
+            os as os,
+            domain as Domain,
+            hostname as hostname,
+            #:::Host.hostname as HostHostname
+        </show>
+    </report>
+
+    <report name="DQ.Report.GoodNodes">
+        <title>Good Endpoints Discovered - Last Access</title>
+        <description>Shows endpoints with good discovery</description>
+        <kind>DiscoveryAccess</kind>
+        <where>end_state = "GoodAccess" AND _last_marker </where>
+        <order-by>endpoint</order-by>
+        <show>
+            endpoint AS IP_Addr,
+            result AS Result,
+            reason AS Reason,
+            #:::DeviceInfo.last_access_method as AccessMethod,
+            #:::DeviceInfo.os as os,
+            #:::DeviceInfo.domain as Domain,
+            #:::DeviceInfo.hostname as Hostname,
+            #:::Host.hostname as HostHostname
+        </show>
+    </report>
+
+    <chart name="DQ.Report.GoodOSTypeDistributionPie" default="pie">
+        <title>Good Endpoint OS Distribution - Last Access</title>
+        <description>Good Endpoint OS Distribution - Last Access</description>
+        <kind>DiscoveryAccess WHERE end_state = "GoodAccess" AND _last_marker</kind>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <split> #:::DeviceInfo.os_type as "_|OS Type|_" </split>
+        <y-axis-title>_|Count|_</y-axis-title>
+        <show>
+            SUMMARY
+        </show>
+    </chart>
+
+    <report name="DQ.Report.BadFsNodes">
+        <title>Endpoints with FileSystem discovery failure - Last Access</title>
+        <description>Shows FileSystem discovery failures from last discovery</description>
+        <kind>FileSystemList</kind>
+        <where> #:::DiscoveryAccess._last_marker AND (method_failure or command_status_failure or failure_reason)  </where>
+        <order-by>#:::DiscoveryAccess.#:::DeviceInfo.os_type </order-by>
+        <show>
+            #:::DiscoveryAccess.endpoint as "IP Address",
+            #:::DiscoveryAccess.#:::DeviceInfo.hostname as "Hostname",
+            #:::DiscoveryAccess.#:::DeviceInfo.os as "os",
+            #:::DiscoveryAccess.#:::DeviceInfo.domain as "Domain",
+            failure_reason,
+            #:::CommandFailure.command_name AS "Failed Command",
+            #:::CommandFailure.session_type AS "Command Type",
+            #:::ScriptFailure.script_name AS "Failed Script",
+            #:::ScriptFailure.message AS "Error Msg",
+            #:::ScriptFailure.session_type AS "Sesion Type",
+            #:::ScriptFailure.su AS "Super User"
+        </show>
+    </report>
+
+
+    <report name="DQ.Report.BadProcNodes">
+        <title>Endpoints with Process discovery failure - Last Access</title>
+        <description>Shows Process discovery failures from last discovery</description>
+        <kind>ProcessList</kind>
+        <where> #:::DiscoveryAccess._last_marker AND (method_failure or command_status_failure or failure_reason)  </where>
+        <order-by>#:::DiscoveryAccess.#:::DeviceInfo.os_type </order-by>
+        <show>
+            #:::DiscoveryAccess.endpoint as "IP Address",
+            #:::DiscoveryAccess.#:::DeviceInfo.hostname as "Hostname",
+            #:::DiscoveryAccess.#:::DeviceInfo.os as "os",
+            #:::DiscoveryAccess.#:::DeviceInfo.domain as "Domain",
+            failure_reason,
+            #:::CommandFailure.command_name AS "Failed Command",
+            #:::CommandFailure.session_type AS "Command Type",
+            #:::ScriptFailure.script_name AS "Failed Script",
+            #:::ScriptFailure.message AS "Error Msg",
+            #:::ScriptFailure.session_type AS "Sesion Type",
+            #:::ScriptFailure.su AS "Super User"
+        </show>
+    </report>
+
+    <report name="DQ.Report.BadNetNodes">
+        <title>Endpoints with Network Connection discovery failure - Last Access</title>
+        <description>Shows Network Connection discovery failures from last discovery</description>
+        <kind>NetworkConnectionList</kind>
+        <where> #:::DiscoveryAccess._last_marker AND (method_failure or command_status_failure or failure_reason) AND NOT additional_discovery_methods  </where>
+        <order-by>#:::DiscoveryAccess.#:::DeviceInfo.os_type </order-by>
+        <show>
+            #:::DiscoveryAccess.endpoint as "IP Address",
+            #:::DiscoveryAccess.#:::DeviceInfo.hostname as "Hostname",
+            #:::DiscoveryAccess.#:::DeviceInfo.os as "os",
+            #:::DiscoveryAccess.#:::DeviceInfo.domain as "Domain",
+            failure_reason,
+            #:::CommandFailure.command_name AS "Failed Command",
+            #:::CommandFailure.session_type AS "Command Type",
+            #:::ScriptFailure.script_name AS "Failed Script",
+            #:::ScriptFailure.message AS "Error Msg",
+            #:::ScriptFailure.session_type AS "Sesion Type",
+            #:::ScriptFailure.su AS "Super User"
+        </show>
+    </report>
+
+    <report name="DQ.Report.BadNetMapNodes">
+        <title>Endpoints with Process To Connection discovery failure - Last Access</title>
+        <description>Shows process to Connection discovery failures from last discovery</description>
+        <kind>NetworkConnectionList</kind>
+        <where> #:::DiscoveryAccess._last_marker AND (method_failure or command_status_failure or failure_reason) AND additional_discovery_methods  </where>
+        <order-by>#:::DiscoveryAccess.#:::DeviceInfo.os_type </order-by>
+        <show>
+            #:::DiscoveryAccess.endpoint as "IP Address",
+            #:::DiscoveryAccess.#:::DeviceInfo.hostname as "Hostname",
+            #:::DiscoveryAccess.#:::DeviceInfo.os as "os",
+            #:::DiscoveryAccess.#:::DeviceInfo.domain as "Domain",
+            failure_reason,
+            #:::CommandFailure.command_name AS "Failed Command",
+            #:::CommandFailure.session_type AS "Command Type",
+            #:::ScriptFailure.script_name AS "Failed Script",
+            #:::ScriptFailure.message AS "Error Msg",
+            #:::ScriptFailure.session_type AS "Sesion Type",
+            #:::ScriptFailure.su AS "Super User"
+        </show>
+    </report>
+
+    <report name="DQ.Report.BadInterNodes">
+        <title>Endpoints with Interface discovery failure - Last Access</title>
+        <description>Shows Interface discovery failures from last discovery</description>
+        <kind>InterfaceList</kind>
+        <where> #:::DiscoveryAccess._last_marker AND (method_failure or command_status_failure or failure_reason)  </where>
+        <order-by>#:::DiscoveryAccess.#:::DeviceInfo.os_type </order-by>
+        <show>
+            #:::DiscoveryAccess.endpoint as "IP Address",
+            #:::DiscoveryAccess.#:::DeviceInfo.hostname as "Hostname",
+            #:::DiscoveryAccess.#:::DeviceInfo.os as "os",
+            #:::DiscoveryAccess.#:::DeviceInfo.domain as "Domain",
+            failure_reason,
+            #:::CommandFailure.command_name AS "Failed Command",
+            #:::CommandFailure.session_type AS "Command Type",
+            #:::ScriptFailure.script_name AS "Failed Script",
+            #:::ScriptFailure.message AS "Error Msg",
+            #:::ScriptFailure.session_type AS "Sesion Type",
+            #:::ScriptFailure.su AS "Super User"
+        </show>
+    </report>
+
+    <report name="DQ.Report.BadIntegNodes">
+        <title>Endpoints with Integration discovery failure - Last Access</title>
+        <description>Shows Integration discovery failures from last discovery</description>
+        <kind>IntegrationResult</kind>
+        <where> #:::DiscoveryAccess._last_marker AND (hard_failure or cancelled)  </where>
+        <order-by>#:::DiscoveryAccess.#:::DeviceInfo.os_type </order-by>
+        <show>
+            #:::DiscoveryAccess.endpoint as "IP Address",
+            #:::DiscoveryAccess.#:::DeviceInfo.hostname as "Hostname",
+            #:::DiscoveryAccess.#:::DeviceInfo.os as "os",
+            #:::DiscoveryAccess.#:::DeviceInfo.domain as "Domain",
+            provider,
+            failure_reason,
+            #:::Pattern.name
+        </show>
+    </report>
+
+    <report name="DQ.Report.BadHBANodes">
+        <title>Endpoints with HBA discovery failure - Last Access</title>
+        <description>Shows HBA discovery failures from last discovery</description>
+        <kind>HBAInfoList</kind>
+        <where> #:::DiscoveryAccess._last_marker AND (method_failure or command_status_failure or failure_reason)  </where>
+        <order-by>#:::DiscoveryAccess.#:::DeviceInfo.os_type </order-by>
+        <show>
+            #:::DiscoveryAccess.endpoint as "IP Address",
+            #:::DiscoveryAccess.#:::DeviceInfo.hostname as "Hostname",
+            #:::DiscoveryAccess.#:::DeviceInfo.os as "os",
+            #:::DiscoveryAccess.#:::DeviceInfo.domain as "Domain",
+            failure_reason,
+            #:::CommandFailure.command_name AS "Failed Command",
+            #:::CommandFailure.session_type AS "Command Type",
+            #:::ScriptFailure.script_name AS "Failed Script",
+            #:::ScriptFailure.message AS "Error Msg",
+            #:::ScriptFailure.session_type AS "Sesion Type",
+            #:::ScriptFailure.su AS "Super User"
+        </show>
+    </report>
+
+    <report name="DQ.Report.BadPackNodes">
+        <title>Endpoints with Package discovery failure - Last Access</title>
+        <description>Shows Package discovery failures from last discovery</description>
+        <kind>DiscoveredPackages</kind>
+        <where> #:::DiscoveryAccess._last_marker AND (method_failure or command_status_failure or failure_reason)  </where>
+        <order-by>#:::DiscoveryAccess.#:::DeviceInfo.os_type </order-by>
+        <show>
+            #:::DiscoveryAccess.endpoint as "IP Address",
+            #:::DiscoveryAccess.#:::DeviceInfo.hostname as "Hostname",
+            #:::DiscoveryAccess.#:::DeviceInfo.os as "os",
+            #:::DiscoveryAccess.#:::DeviceInfo.domain as "Domain",
+            failure_reason,
+            #:::CommandFailure.command_name AS "Failed Command",
+            #:::CommandFailure.session_type AS "Command Type",
+            #:::ScriptFailure.script_name AS "Failed Script",
+            #:::ScriptFailure.message AS "Error Msg",
+            #:::ScriptFailure.session_type AS "Sesion Type",
+            #:::ScriptFailure.su AS "Super User"
+        </show>
+    </report>
+
+    <report name="DQ.Report.NoResponseNodes">
+        <title>Endpoints not responding - last Access</title>
+        <description>Shows endpoints with no response</description>
+        <kind>DeviceInfo</kind>
+        <where>#:::DiscoveryAccess.end_state &lt;&gt; "GoodAccess" AND #:::DiscoveryAccess.result = "NoResponse" AND #:::DiscoveryAccess._last_marker </where>
+        <order-by>#:::DiscoveryAccess.endpoint</order-by>
+        <show>
+            #:::DiscoveryAccess.endpoint AS IP_Addr,
+            #:::DiscoveryAccess.result AS Result,
+            #:::DiscoveryAccess.reason AS Reason,
+            last_access_method as AccessMethod,
+            os as os,
+            domain as Domain,
+            hostname as hostname,
+            #:::Host.hostname as HostHostname
+        </show>
+    </report>
+
+    <report name="DQ.Report.SkippedNodes">
+        <title>Endpoints skipped - Last Access</title>
+        <description>Shows endpoints that were skipped</description>
+        <kind>DeviceInfo</kind>
+        <where>#:::DiscoveryAccess.end_state &lt;&gt; "GoodAccess" AND #:::DiscoveryAccess.result = "Skipped" AND #:::DiscoveryAccess._last_marker </where>
+        <order-by>#:::DiscoveryAccess.endpoint</order-by>
+        <show>
+            #:::DiscoveryAccess.endpoint AS IP_Addr,
+            #:::DiscoveryAccess.result AS Result,
+            #:::DiscoveryAccess.reason AS Reason,
+            last_access_method as AccessMethod,
+            os as os,
+            domain as Domain,
+            hostname as hostname,
+            #:::Host.hostname as HostHostname
+        </show>
+    </report>
+
+    <chart name="DQ.Report.SkippedOSTypeDistributionPie" default="pie">
+        <title>Endpoints skipped OS Distribution - Last Access</title>
+        <description>Endpoints skipped OS Distribution - Last Access</description>
+        <kind>DeviceInfo WHERE #:::DiscoveryAccess.result &lt;&gt; "NoResponse" AND #:::DiscoveryAccess.result = "Skipped" AND #:::DiscoveryAccess.end_state &lt;&gt; "GoodAccess" AND #:::DiscoveryAccess._last_marker</kind>
+        <order-by>os</order-by>
+        <split> os as "_|OS|_" </split>
+        <y-axis-title>_|Count|_</y-axis-title>
+        <show>
+            SUMMARY
+        </show>
+    </chart>
+
+
+    <report name="DQ.Report.UnmatchedProc">
+        <title>Global unrecognized Processes - Last Access</title>
+        <description>Shows unrecognized processes ordered by incidence count</description>
+        <kind>DiscoveredProcess</kind>
+        <where>nodecount(traverse :::ProcessList traverse :::DiscoveryAccess where _last_marker)>0 and not simple_identity and not #:::SoftwareInstance</where>
+        <order-by>cmd</order-by>
+        <show>
+            cmd, args, username process with countUnique(0)
+        </show>
+    </report>
+
+    <report name="DQ.Report.UnmatchedProcPort">
+        <title>Global unrecognized Processes with Listening Port - Last Access</title>
+        <description>Shows unrecognized processes with listening port ordered by incidence count</description>
+        <kind>DiscoveredProcess</kind>
+        <where>nodecount(traverse :::ProcessList traverse :::DiscoveryAccess where _last_marker)>0 and not simple_identity and not #:::SoftwareInstance and #:::DiscoveredListeningPort</where>
+        <order-by>cmd</order-by>
+        <show>
+            cmd, args, username, #:::DiscoveredListeningPort  PROCESS WITH countUnique(0)
+        </show>
+    </report>
+
+    <report name="DQ.Report.UnmatchedProcHost">
+        <title>Find Host unrecognized processes - Last Access</title>
+        <description>Shows unrecognized processes by Host</description>
+        <kind>Host</kind>
+        <where>
+            #:::NetworkInterface.ip_addr LIKE %(opt_name)s TRAVERSE InferredElement:Inference:Primary:DeviceInfo TRAVERSE DiscoveryResult:DiscoveryAccessResult:DiscoveryAccess:DiscoveryAccess WHERE _last_marker TRAVERSE DiscoveryAccess:DiscoveryAccessResult:DiscoveryResult:ProcessList TRAVERSE List:List:Member:DiscoveredProcess WHERE not simple_identity and not #:::SoftwareInstance
+        </where>
+        <parameters> 
+            <parameter name="DQ_Report_UnmatchedProcHost_name">
+                <title>Host IP Addr</title>
+                <type name="TextField">
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>opt_name</key>
+            </parameter>        
+        </parameters>
+    </report>
+
+    <report name="DQ.Report.NetworkComms">
+        <title>Network Communications</title>
+        <description>Shows observed network communications</description>
+        <kind>Host TRAVERSE :::DiscoveryAccess TRAVERSE :::NetworkConnectionList TRAVERSE :::DiscoveredNetworkConnection</kind>
+        <show>
+            SUMMARY process with networkConnectionInfo
+        </show>
+    </report>
+    
+    <report name="DQ.Report.HardwareRefData">
+        <title>Host DQ - Missing HRD</title>
+        <description>Show Hosts with Missing HRD Info</description>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker and #Associate:Inference:InferredElement:Host and NOT #Associate:Inference:InferredElement:Host.virtual and NOT #Associate:Inference:InferredElement:Host.#:::HardwareReferenceData</where>
+        <show>
+            endpoint as "IP Addr",
+            #Associate:Inference:InferredElement:Host.hostname as "Hostname",
+            #Associate:Inference:InferredElement:Host.os_type as "OS type",
+            #Associate:Inference:InferredElement:Host.vendor as "Vendor",
+            #Associate:Inference:InferredElement:Host.model as "Model"
+        </show>
+    </report>
+
+    <report name="DQ.Report.OSSupportData">
+        <title>Host DQ - Missing OS EOL</title>
+        <description>Show Hosts with Missing OS EOL Info</description>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker and #Associate:Inference:InferredElement:Host and NOT #Associate:Inference:InferredElement:Host.#ElementWithDetail:SupportDetail:OSDetail:SupportDetail</where>
+        <show>
+            endpoint as "IP Addr",
+            #Associate:Inference:InferredElement:Host.hostname as "Hostname",
+            #Associate:Inference:InferredElement:Host.os_type as "OS type",
+            #Associate:Inference:InferredElement:Host.os_version as "OS Version"
+        </show>
+    </report> 
+    
+    <report name="DQ.Report.SISupportData">
+        <title>Host DQ - Missing SI EOL</title>
+        <description>Show SoftwareInstances with Missing SI EOL Info</description>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker and #Associate:Inference:InferredElement:Host and NOT #Associate:Inference:InferredElement:Host.#Host:HostedSoftware:RunningSoftware:SoftwareInstance.#ElementWithDetail:SupportDetail:SoftwareDetail:SupportDetail</where>
+        <show>
+            #Associate:Inference:InferredElement:Host.#Host:HostedSoftware:RunningSoftware:SoftwareInstance.name as "SI name",
+            #Associate:Inference:InferredElement:Host.#Host:HostedSoftware:RunningSoftware:SoftwareInstance.type as "SI type",
+            #Associate:Inference:InferredElement:Host.#Host:HostedSoftware:RunningSoftware:SoftwareInstance.product_version as "SI Version"
+        </show>
+    </report>
+
+    <report name="DQ.Report.HostIPDuplicate">
+        <title>Host DQ - Host IP Duplication</title>
+        <description>Shows IP Duplication</description>
+        <kind>NetworkInterface</kind>
+        <show>
+            ip_addr PROCESS WITH countUnique(0)
+        </show>
+    </report>
+
+    <report name="DQ.Report.HostHostnameDuplicate">
+        <title>Host DQ - Host Hostname Duplication</title>
+        <description>Shows Hostname Duplication</description>
+        <kind>Host</kind>
+        <show>
+            hostname PROCESS WITH countUnique(0)
+        </show>
+    </report>
+
+    <report name="DQ.Report.HostNAT">
+        <title>Host DQ - Hosts with NAT</title>
+        <description>Shows Hosts behind NAT</description>
+        <kind>DiscoveryAccess</kind>
+        <where> end_state = "GoodAccess" AND _last_marker AND endpoint NOT IN #Associate:Inference:InferredElement:Host.#:::NetworkInterface.ip_addr </where>
+        <order-by>endpoint</order-by>
+        <show>
+            endpoint,
+            #Associate:Inference:InferredElement:Host.#:::NetworkInterface.ip_addr as IP_Address,
+            #Associate:Inference:InferredElement:Host.hostname as Hostname
+        </show>
+    </report>
+
+    <report-channel name="Reports.Channel.Deployment">
+        <title>Deployment Details</title>
+        <description>Foundation Deployment</description>
+        <chart>DQ.Report.EndpointDistributionPie</chart>
+        <report>DQ.Report.BadCredNodes</report>
+        <chart>DQ.Report.BadCredOSTypePie</chart>
+        <report>DQ.Report.AccessMethods</report>
+        <report>DQ.Report.GoodNodes</report>
+        <chart>DQ.Report.GoodOSTypeDistributionPie</chart>
+        <report>DQ.Report.BadProcNodes</report>
+        <report>DQ.Report.BadNetNodes</report>
+        <report>DQ.Report.BadNetMapNodes</report>
+        <report>DQ.Report.BadInterNodes</report>
+        <report>DQ.Report.BadIntegNodes</report>
+        <report>DQ.Report.BadFsNodes</report>
+        <report>DQ.Report.BadHBANodes</report>
+        <report>DQ.Report.BadPackNodes</report>
+        <report>DQ.Report.SkippedNodes</report>
+        <chart>DQ.Report.SkippedOSTypeDistributionPie</chart>
+        <report>DQ.Report.NoResponseNodes</report>
+        <report>DQ.Report.UnmatchedProc</report>
+        <report>DQ.Report.UnmatchedProcPort</report>
+        <report>DQ.Report.UnmatchedProcHost</report>
+        <report>DQ.Report.NetworkComms</report>
+        <report>DQ.Report.HardwareRefData</report>
+        <report>DQ.Report.OSSupportData</report>
+        <report>DQ.Report.SISupportData</report>
+        <report>DQ.Report.HostIPDuplicate</report>
+        <report>DQ.Report.HostHostnameDuplicate</report>
+        <report>DQ.Report.HostNAT</report>
+    </report-channel>
+
+
+<!-- START OF DASHBOARD REPORTS  -->  
+
+
+
+<!-- CREDENTIALLESS DASHBOARD -->  
+
+    <chart-multi-channel name="Channel.EndPointAccess">
+        <title>Discovery Failures - EndpointAccess</title>
+        <description>Shows endpoint type and access success</description>
+        <split>#:::DeviceInfo.device_type as "Device type"</split>
+        <split>end_state as "End State"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker 
+        	     AND #DiscoveryAccess:DiscoveryAccessResult:DiscoveryResult:DeviceInfo.device_type 
+               AND NOT #Associate:Inference:InferredElement:Host.hostname
+               AND NOT #Associate:Inference:InferredElement:Printer.name
+               AND NOT #Associate:Inference:InferredElement:NetworkDevice.name
+               AND NOT #Associate:Inference:InferredElement:Mainframe.name</where>
+        <order-by>#:::DeviceInfo.device_type</order-by>
+        <show>
+            endpoint, #:::DeviceInfo.device_type, end_state
+        </show>        
+    </chart-multi-channel>
+
+<!-- SERVER CREDENTIAL DASHBOARD -->  
+    <chart-multi-channel name="Channel.ServerProcessToConnection">
+        <title>Discovery Failures - Server ProcessToConnection</title>
+        <description>Shows failed Process to Connection data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Server"
+        	   AND #:::NetworkConnectionList.additional_discovery_methods
+        	   AND #:::NetworkConnectionList.failure_reason</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.ServerProcessList">
+        <title>Discovery Failures - Server Process</title>
+        <description>Shows failed process data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Server" 
+        	  AND (#:::ProcessList.method_failure or #:::ProcessList.command_status_failure or #:::ProcessList.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.ServerNetworkConnectionList">
+        <title>Discovery Failures - Server Network Connection</title>
+        <description>Shows failed Network Connection data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>#:::DiscoveryAccess._last_marker AND #:::DeviceInfo.device_type has substring "Server"
+        	     AND (#:::NetworkConnectionList.method_failure or #:::NetworkConnectionList.command_status_failure or #:::NetworkConnectionList.failure_reason)AND NOT #:::NetworkConnectionList.additional_discovery_methods</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.ServerInterfaceList">
+        <title>Discovery Failures - Server Interface</title>
+        <description>Shows failed Interface data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Server"
+        	    AND (#:::InterfaceList.method_failure or #:::InterfaceList.command_status_failure or #:::InterfaceList.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.ServerFileSystemList">
+        <title>Discovery Failures - Server File System Info</title>
+        <description>Shows failed File System discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Server"
+        	   AND (#:::FileSystemList.method_failure or #:::FileSystemList.command_status_failure or #:::FileSystemList.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.ServerHBAInfoList">
+        <title>Discovery Failures - Server HBA Info</title>
+        <description>Shows failed HBA data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Server"
+        	   AND (#:::HBAInfoList.method_failure or #:::HBAInfoList.command_status_failure or #:::HBAInfoList.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.ServerDiscoveredPackages">
+        <title>Discovery Failures - Server Packages</title>
+        <description>Shows failed Package data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Server"
+        	    AND (#:::DiscoveredPackages.method_failure or #:::DiscoveredPackages.command_status_failure or #:::DiscoveredPackages.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+    
+
+    
+    
+<!-- SERVER DATA QUALITY DASHBOARD -->  
+    
+    <chart-multi-channel name="Channel.ServerMissingModelNum">
+        <title>Data Quality - Missing Host Model Numbers</title>
+        <description>Shows Hosts with Missing Model Numbers</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Server"
+        	                  AND #Associate:Inference:InferredElement:Host &lt;&gt; none
+        	                  AND #Associate:Inference:InferredElement:Host.model = none</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.ServerMissingUniqueId">
+        <title>Data Quality - Missing Host Unique Identifiers</title>
+        <description>Shows Hosts with Missing Serial Numbers and HostIds</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Server"
+        	                  AND #Associate:Inference:InferredElement:Host &lt;&gt; none
+        	                  AND #Associate:Inference:InferredElement:Host.serial = none
+        	                  AND #Associate:Inference:InferredElement:Host.hostid = none</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+    
+    <chart-multi-channel name="Channel.ServerMissingConnectionPID">
+        <title>Data Quality - Missing Connection PIDs</title>
+        <description>Shows Hosts with Missing PIDs on Network Connections</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Server"
+        	                  AND #Associate:Inference:InferredElement:Host &lt;&gt; none
+        	                  AND NODECOUNT(TRAVERSE DiscoveryAccess:DiscoveryAccessResult:DiscoveryResult:NetworkConnectionList
+        	                                TRAVERSE List:List:Member:DiscoveredNetworkConnection 
+        	                                where pid &lt;&gt; none) = 0</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+    
+    <chart-multi-channel name="Channel.ServerMissingNICMACAddr">
+        <title>Data Quality - Host with missing NIC MAC Address</title>
+        <description>Shows Hosts with missing MAC Address</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Server"
+        	                  AND #Associate:Inference:InferredElement:Host &lt;&gt; none
+        	                  AND NODECOUNT(TRAVERSE Associate:Inference:InferredElement:Host
+        	                                TRAVERSE DeviceWithInterface:DeviceInterface:InterfaceOfDevice:NetworkInterface 
+        	                                where mac_addr &lt;&gt; none) = 0</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+    
+        <chart-multi-channel name="Channel.ServerMissingNICSpeed">
+        <title>Data Quality - Host with missing NIC Speed</title>
+        <description>Shows Hosts with Missing NIC Speed</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Server"
+        	                  AND #Associate:Inference:InferredElement:Host &lt;&gt; none
+        	                  AND NODECOUNT(TRAVERSE Associate:Inference:InferredElement:Host
+        	                                TRAVERSE DeviceWithInterface:DeviceInterface:InterfaceOfDevice:NetworkInterface 
+        	                                where speed &lt;&gt; none) = 0</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+    
+
+    
+    <chart-multi-channel name="Channel.ServerMissingPatcheList">
+        <title>Data Quality - Host with missing Patch List</title>
+        <description>Shows Hosts with Missing Patch Lists</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Server"
+        	                  AND #Associate:Inference:InferredElement:Host &lt;&gt; none
+        	                  AND NODECOUNT(TRAVERSE Associate:Inference:InferredElement:Host
+        	                                TRAVERSE InferredElement:Inference:Contributor:DiscoveredPatches) = 0</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.ServerMissingPackageList">
+        <title>Data Quality - Host with missing Package List</title>
+        <description>Shows Hosts with Missing Package Lists</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Server"
+        	                  AND #Associate:Inference:InferredElement:Host &lt;&gt; none
+        	                  AND NODECOUNT(TRAVERSE Associate:Inference:InferredElement:Host
+        	                                TRAVERSE InferredElement:Inference:Contributor:DiscoveredPackages) = 0</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>    
+
+<!-- DESKTOP CREDENTIAL DASHBOARD -->  
+    <chart-multi-channel name="Channel.DesktopProcessToConnection">
+        <title>Discovery Failures - Desktop ProcessToConnection</title>
+        <description>Shows failed Desktop Process to Connection data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Desktop"
+        	   AND #:::NetworkConnectionList.additional_discovery_methods
+        	   AND #:::NetworkConnectionList.failure_reason</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.DesktopProcessList">
+        <title>Discovery Failures - Desktop Process</title>
+        <description>Shows failed Desktop process data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Desktop" 
+        	  AND (#:::ProcessList.method_failure or #:::ProcessList.command_status_failure or #:::ProcessList.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.DesktopNetworkConnectionList">
+        <title>Discovery Failures - Desktop Network Connection</title>
+        <description>Shows failed Desktop Network Connection data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>#:::DiscoveryAccess._last_marker AND #:::DeviceInfo.device_type has substring "Desktop"
+        	     AND (#:::NetworkConnectionList.method_failure or #:::NetworkConnectionList.command_status_failure or #:::NetworkConnectionList.failure_reason)AND NOT #:::NetworkConnectionList.additional_discovery_methods</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.DesktopInterfaceList">
+        <title>Discovery Failures - Desktop Interface</title>
+        <description>Shows failed Desktop Interface data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Desktop"
+        	    AND (#:::InterfaceList.method_failure or #:::InterfaceList.command_status_failure or #:::InterfaceList.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.DesktopFileSystemList">
+        <title>Discovery Failures - Desktop File System Info</title>
+        <description>Shows failed Desktop File System discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Desktop"
+        	   AND (#:::FileSystemList.method_failure or #:::FileSystemList.command_status_failure or #:::FileSystemList.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.DesktopHBAInfoList">
+        <title>Discovery Failures - Desktop HBA Info</title>
+        <description>Shows failed HBA data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Desktop"
+        	   AND (#:::HBAInfoList.method_failure or #:::HBAInfoList.command_status_failure or #:::HBAInfoList.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.DesktopDiscoveredPackages">
+        <title>Discovery Failures - Desktop Packages</title>
+        <description>Shows failed Package data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Desktop"
+        	    AND (#:::DiscoveredPackages.method_failure or #:::DiscoveredPackages.command_status_failure or #:::DiscoveredPackages.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+   
+
+   
+<!-- NETWORK DEVICE CREDENTIAL DASHBOARD -->  
+<!-- Little unclear which steps should be monitored -->
+
+    <chart-multi-channel name="Channel.DeviceInterfaceList">
+        <title>Discovery Failures - Device Interface</title>
+        <description>Shows failed Interface data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Network"
+        	    AND (#:::InterfaceList.method_failure or #:::InterfaceList.command_status_failure or #:::InterfaceList.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.DeviceVLANList">
+        <title>Discovery Failures - Device VLAN Info</title>
+        <description>Shows failed VLAN discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Network"
+        	   AND (#:::DiscoveredVLANListList.method_failure or #:::DiscoveredVLANListList.command_status_failure or #:::DiscoveredVLANListList.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.DeviceBridgeList">
+        <title>Discovery Failures - Device Bridge Info</title>
+        <description>Shows failed Bridge data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Network"
+        	   AND (#:::DiscoveredBridgeList.method_failure or #:::DiscoveredBridgeList.command_status_failure or #:::DiscoveredBridgeList.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+
+<!-- PRINTER CREDENTIAL DASHBOARD -->
+<!-- No need for getDeviceInfor or get ChassisInfo graphs as there are required steps -->
+    
+    <chart-multi-channel name="Channel.PrinterCardInfo">
+        <title>Discovery Failures - Printer Card Info</title>
+        <description>Shows failed Printer Card data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Printer"
+        	   AND (#:::DiscoveredCardList.method_failure or #:::DiscoveredCardList.command_status_failure or #:::DiscoveredCardList.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+
+    <chart-multi-channel name="Channel.PrinterPortInfo">
+        <title>Discovery Failures - Printer Port Info</title>
+        <description>Shows failed Printer Port data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Printer"
+        	   AND (#:::DiscoveredDevicePortList.method_failure or #:::DiscoveredDevicePortList.command_status_failure or #:::DiscoveredDevicePortList.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.PrinterInterfaceList">
+        <title>Discovery Failures - Printer Interfaces</title>
+        <description>Shows failed Printer Interface data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Printer"
+        	   AND (#:::InterfaceList.method_failure or #:::InterfaceList.command_status_failure or #:::InterfaceList.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+
+
+<!-- HYPERVISOR CREDENTIAL DASHBOARD -->  
+    <chart-multi-channel name="Channel.HypervisorVirtualMachineList">
+        <title>Discovery Failures - Hypervisor VirtualMachineList</title>
+        <description>Shows failed Virtual Machine data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Hypervisor"
+        	    AND (#:::VirtualMachineListList.method_failure or #:::VirtualMachineList.command_status_failure or #:::VirtualMachineList.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+   <chart-multi-channel name="Channel.HypervisorPatchList">
+        <title>Discovery Failures - Hypervisor Patch</title>
+        <description>Shows failed Patch data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Hypervisor"
+        	    AND (#:::DiscoveredPatches.method_failure or #:::DiscoveredPatches.command_status_failure or #:::DiscoveredPatches.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.HypervisorFileSystemList">
+        <title>Discovery Failures - Hypervisor File System Info</title>
+        <description>Shows failed File System discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Hypervisor"
+        	   AND (#:::FileSystemList.method_failure or #:::FileSystemList.command_status_failure or #:::FileSystemList.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+    <chart-multi-channel name="Channel.HypervisorHBAInfoList">
+        <title>Discovery Failures - Hypervisor HBA Info</title>
+        <description>Shows failed HBA data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Hypervisor"
+        	   AND (#:::HBAInfoList.method_failure or #:::HBAInfoList.command_status_failure or #:::HBAInfoList.failure_reason)</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+<!-- MAINFRAME CREDENTIAL DASHBOARD -->  
+    <chart-multi-channel name="Channel.MainframeProcessToConnection">
+        <title>Discovery Failures - Hypervisor ProcessToConnection</title>
+        <description>Shows failed Process to Connection data discovery</description>
+        <split>#:::DeviceInfo.os_type as "OS Type"</split>
+        <split>#:::DeviceInfo.os_version as "OS Version"</split>
+        <kind>DiscoveryAccess</kind>
+        <where>_last_marker AND #:::DeviceInfo.device_type has substring "Mainframe"
+        	   AND #:::NetworkConnectionList.additional_discovery_methods
+        	   AND #:::NetworkConnectionList.failure_reason</where>
+        <order-by>#:::DeviceInfo.os_type</order-by>
+        <show>
+            SUMMARY
+        </show>        
+    </chart-multi-channel>
+
+<!-- MAY BE REDUNDANT NOW -->    
+
+    <time-series-channel name="Channel.DiscoHostOSTypeLine" time-series="7">
+        <title>Host count by OS Type</title>
+        <description>
+        Evolution of the number of discovered hosts over time split by OS type
+        </description>
+        <split>os_type</split>
+        <kind>Host</kind>
+        <show>
+            SUMMARY
+        </show>        
+    </time-series-channel>
+
+</reports>

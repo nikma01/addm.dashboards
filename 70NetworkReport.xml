@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+
+
+<!-- Warnings
+Report channel Reports.Channel.Optimize references report DCO.ReportsForCharts.SICategories not yet output - reordering
+-->
+
+<reports version="2.0">
+
+   
+
+
+    <!--
+###################################
+#### Network Devices Channels ####
+###################################-->
+
+
+    <chart-channel name="Channel.NTWKType" default="pie">
+        <title>Network Device: by Type</title>
+        <description>Show Network Devices by Type</description>
+        <split>type</split>
+        <kind>NetworkDevice</kind>
+        <where>
+		</where>
+        <order-by> 
+			type,vendor
+		</order-by>
+        <show>
+			name, 
+			type, 
+			vendor, 
+			model, 
+			#InferredElement:Inference:Associate:DiscoveryAccess.endpoint, 
+			os_vendor AS 'Discovered OS Vendor', os_version AS 'Discovered OS Version', 
+			last_update_success AS 'Last Update Success', serial AS 'Serial ID'
+        </show>
+    </chart-channel>
+
+    <chart-channel name="Channel.NTWKVendor" default="pie">
+        <title>Network Device: by Vendor</title>
+        <description>Show Network Devices by Vendor</description>
+        <split>vendor</split>
+        <kind>NetworkDevice</kind>
+        <where>
+		</where>
+        <order-by> 
+			vendor,model
+		</order-by>
+        <show>
+			name, 
+			type, 
+			vendor, 
+			model, 
+			#InferredElement:Inference:Associate:DiscoveryAccess.endpoint, 
+			os_vendor AS 'Discovered OS Vendor', os_version AS 'Discovered OS Version', 
+			last_update_success AS 'Last Update Success', serial AS 'Serial ID'
+        </show>
+    </chart-channel>
+
+    <chart-channel name="Channel.NTWKModel" default="column">
+        <title>Network Device: by Model</title>
+        <description>Show Network Devices by Model</description>
+        <split>model</split>
+        <kind>NetworkDevice</kind>
+        <where>
+		</where>
+        <order-by> 
+			vendor,model
+		</order-by>
+        <show>
+			name, 
+			type, 
+			vendor, 
+			model, 
+			#InferredElement:Inference:Associate:DiscoveryAccess.endpoint, 
+			os_vendor AS 'Discovered OS Vendor', os_version AS 'Discovered OS Version', 
+			last_update_success AS 'Last Update Success', serial AS 'Serial ID'
+        </show>
+    </chart-channel>
+	
+    <chart-channel name="Channel.NTWKOSVersion" default="column">
+        <title>Network Device: by discovered OS Version</title>
+        <description>Show Network Devices discovered by OS Version</description>
+        <split>os_version</split>
+        <kind>NetworkDevice</kind>
+        <where>
+		</where>
+        <order-by> 
+			vendor,os_version
+		</order-by>
+        <show>
+			name, 
+			type, 
+			vendor, 
+			model, 
+			#InferredElement:Inference:Associate:DiscoveryAccess.endpoint, 
+			os_vendor AS 'Discovered OS Vendor', os_version AS 'Discovered OS Version', 
+			last_update_success AS 'Last Update Success', serial AS 'Serial ID'
+        </show>
+    </chart-channel>
+
+    <report-channel name="Reports.Channel.ExerciseWeblogic">
+        <title>.ExerciseNetwork</title>
+        <chart>Channel.NTWKType</chart>
+        <chart>Channel.NTWKVendor</chart>
+        <chart>Channel.NTWKModel</chart>
+        <chart>Channel.NTWKOSVersion</chart>
+    </report-channel>
+
+	
+
+	
+    <!-- SetupHome channels are configured dynamically from the loaded
+         modules. Any definition here will be ignored!
+      -->
+</reports>

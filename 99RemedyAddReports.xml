@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+
+<!-- Warnings
+Report channel Reports.Channel.Optimize references report DCO.ReportsForCharts.SICategories not yet output - reordering
+-->
+
+<reports version="2.0">
+
+   
+
+
+    <!--
+###########################################
+#### Product Remedy-ARServer Channels2 ####
+###########################################-->
+
+    <time-series-channel name="Channel.SWRemedyTime" time-series="7">
+        <title>Remedy Over Time</title>
+        <description>Remedy Over Time</description>
+        <kind>SoftwareInstance</kind>
+        <where>
+            type = 'BMC Remedy AR System Server'
+        </where>
+        <order-by>product_version</order-by>
+        <show>
+            type,
+            name,
+            product_version,
+            version,
+            #:HostedSoftware:Host:Host.name AS 'Host'
+        </show>
+    </time-series-channel>
+
+    <report-channel name="Reports.Channel.ExerciseRemedy-ARServer2">
+        <title>.ExerciseRemedyTime</title>
+		<time-series-channel>Channel.SWRemedyTime<time-series-channel>
+
+    </report-channel>
+
+	
+
+	
+    <!-- SetupHome channels are configured dynamically from the loaded
+         modules. Any definition here will be ignored!
+      -->
+</reports>

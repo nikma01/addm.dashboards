@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+
+
+<!-- Warnings
+Report channel Reports.Channel.Optimize references report DCO.ReportsForCharts.SICategories not yet output - reordering
+-->
+
+<reports version="2.0">
+
+   
+
+
+    <!--
+###########################################
+#### Product Apache ADD Reports        ####
+###########################################-->
+
+    <time-series-channel name="Channel.SWApacheCountTime" time-series="7">
+        <title>Servers running Apache: Count Over Time</title>
+        <description>Apache servers count over time</description>
+        <kind>SoftwareInstance</kind>
+        <where>
+			type MATCHES 'Apache Webserver' OR type MATCHES 'Apache Tomcat Application Server'
+        </where>
+        <order-by>product_version</order-by>
+        <show>
+            type,
+            name,
+            product_version,
+            version,
+            #:HostedSoftware:Host:Host.name AS 'Host'
+        </show>
+    </time-series-channel>
+
+    <time-series-channel name="Channel.SWApacheVersionTime" time-series="7">
+        <title>Servers running Apache: Version Count Over Time</title>
+        <description>Apache Versions over time</description>
+		<split>product_version as "Ver"</split>
+        <kind>SoftwareInstance</kind>
+        <where>
+			type MATCHES 'Apache Webserver' OR type MATCHES 'Apache Tomcat Application Server'
+        </where>
+        <order-by>product_version</order-by>
+        <show>
+            type,
+            name,
+            product_version,
+            version,
+            #:HostedSoftware:Host:Host.name AS 'Host'
+        </show>
+    </time-series-channel>
+
+	
+    <!-- SetupHome channels are configured dynamically from the loaded
+         modules. Any definition here will be ignored!
+      -->
+</reports>

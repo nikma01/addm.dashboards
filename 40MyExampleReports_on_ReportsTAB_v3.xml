@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+
+<!-- Automatically generated based on file 10DeployReports.xml -->
+
+<!-- Warnings
+Report channel Reports.Channel.Optimize references report DCO.ReportsForCharts.SICategories not yet output - reordering
+-->
+
+<reports version="2.0">
+
+   
+
+
+
+    <report name="Exercise.10NetworkConnections">
+        <title>Hosts with more than 10 network connections</title>
+        <description>Shows list of Hosts with more than 10 network connections</description>
+        <kind>DiscoveryAccess</kind>
+        <where>
+			_last_marker > 0
+			AND nodecount (traverse DiscoveryAccess:DiscoveryAccessResult:DiscoveryResult:NetworkConnectionList traverse List:List:Member:DiscoveredNetworkConnection) >10
+        </where>
+        <show>
+			endpoint,
+			#Associate:Inference:InferredElement:Host.hostname,
+			nodecount (traverse DiscoveryAccess:DiscoveryAccessResult:DiscoveryResult:NetworkConnectionList traverse List:List:Member:DiscoveredNetworkConnection)
+        </show>
+    </report>
+	
+    <report name="Exercise.SI.ByPatternCat">
+        <title>SI by PatternCategories</title>
+        <description>Shows SoftwareInstances By Pattern Categories</description>
+        <kind>SoftwareInstance</kind>
+        <order-by>(#Element:Maintainer:Pattern:Pattern.categories)</order-by>
+        <show>
+            explode #Element:Maintainer:Pattern:Pattern.categories AS "_|Pattern_Category|_"
+        </show>
+    </report>
+
+	<report name="Exercise.CPUBasedLicense">
+        <title>SI CPU based License Count by SI Type</title>
+        <description>Shows list of hosts supporting specific software type. This uses a drop down of all software types</description>
+        <kind>SoftwareInstance</kind>
+        <where>  type=%(opt_name)s </where>
+        <show>
+            type,  version,
+			#:::Host.virtual AS 'Virtual',
+			#:::Host.os_type AS 'Discovered OS Type',
+			#:::Host.model AS 'Model',
+			#:::Host.hostname AS 'Hostname',
+            #:::Host.processor_type AS 'Processor Type',
+            #:::Host.num_processors AS 'Number of Processors',
+            #:::Host.num_logical_processors as 'Logical processors',
+            #:::Host.cores_per_processor as 'Cores per processor',
+            #:::Host.threads_per_core as 'Threads per core'
+        </show>
+        <parameters> 
+            <parameter name="DCO_Report_CPUBasedLicense_name">
+                <title>Software Type Search</title>
+                <type name="SelectField">
+                    <all>false</all>
+                    <options>
+                        <query>SEARCH SoftwareInstance SHOW type PROCESS WITH unique(1)</query>
+                    </options>
+                    <validate>NotEmpty</validate>
+                </type>
+                <key>opt_name</key>
+            </parameter>        
+        </parameters>
+  </report>
+
+  
+ <chart name="Excercise.Chart.CPUNumDistributionColumn" default="column">
+        <title>Host CPU count Distribution</title>
+        <description>Host CPU count Distribution</description>
+        <kind>Host</kind>
+        <order-by>num_processors</order-by>
+        <split>num_processors  as "_|CPUNUM|_"</split>
+        <y-axis-title>_|Hosts|_</y-axis-title>
+        <show>
+            SUMMARY
+        </show>
+    </chart>
+
+  
+	
+    <report-channel name="Reports.Channel.Exercise">
+        <title>All My Example Reports</title>
+        <description>My Report Examples</description>
+        <report>Exercise.10NetworkConnections</report>
+        <report>Exercise.CPUBasedLicense</report>
+        <chart>Excercise.Chart.CPUNumDistributionColumn</chart>
+        <report>Exercise.SI.ByPatternCat</report>
+    </report-channel>
+
+
+
+</reports>

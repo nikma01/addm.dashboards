@@ -1,0 +1,256 @@
+﻿<?xml version="1.0"?>
+
+
+
+<reports version="2.0">
+
+    <!--
+    #########################################################################
+
+        "Oracle Products" CHANNEL
+
+    #########################################################################
+    -->
+    <report name="Lic.Report.OracleProcs">
+        <title>Oracle DB License Report</title>
+        <description>Shows Oracle Database License Info</description>
+        <kind>SoftwareInstance</kind>
+        <where> type = "Oracle Database Server" </where>
+        <order-by>#RunningSoftware:HostedSoftware:Host:Host.hostname</order-by>
+        <show>
+            version, 
+            instance, 
+            #RunningSoftware:HostedSoftware:Host:Host.hostname,
+            #ContainedHost:HostContainment:HostContainer:Cluster AS "Cluster",
+            #ContainedHost:HostContainment:HostContainer:SoftwareInstance.#RunningSoftware:HostedSoftware:Host:Host.num_processors AS "Underlying Processors",
+            #RunningSoftware:HostedSoftware:Host:Host.num_processors as "Physical Processors",
+            #RunningSoftware:HostedSoftware:Host:Host.num_logical_processors as "Logical Proccessors", 
+            #RunningSoftware:HostedSoftware:Host:Host.cores_per_processor as "Cores",
+            #RunningSoftware:HostedSoftware:Host:Host.threads_per_core   AS "Threads-per-Core"     
+        </show>
+    </report>
+
+    <report name="Lic.Report.WeblogicProcs">
+        <title>Oracle Weblogic License Report</title>
+        <description>Shows Oracle Weblogic License Info</description>
+        <kind>SoftwareInstance</kind>
+        <where> type = "BEA WebLogic Application Server" </where>
+        <order-by>#RunningSoftware:HostedSoftware:Host:Host.hostname</order-by>
+        <show>
+            version, 
+            server_name, 
+            #RunningSoftware:HostedSoftware:Host:Host.hostname, 
+            #ContainedHost:HostContainment:HostContainer:Cluster AS "Cluster",
+            #ContainedHost:HostContainment:HostContainer:SoftwareInstance.#RunningSoftware:HostedSoftware:Host:Host.num_processors AS "Underlying Processors", 
+            #RunningSoftware:HostedSoftware:Host:Host.num_processors as "Physical Processors",
+            #RunningSoftware:HostedSoftware:Host:Host.num_logical_processors as "Logical Proccessors", 
+            #RunningSoftware:HostedSoftware:Host:Host.cores_per_processor as "Cores",
+            #RunningSoftware:HostedSoftware:Host:Host.threads_per_core   AS "Threads-per-Core"   
+        </show>
+    </report>
+
+
+
+    <report name="Lic.Report.SiebelProcs">
+        <title>Oracle Siebel License Report</title>
+        <description>Shows Oracle Siebel License Info</description>
+        <kind>SoftwareInstance</kind>
+        <where> type = "Oracle Siebel CRM Enterprise Server" </where>
+        <order-by>#RunningSoftware:HostedSoftware:Host:Host.hostname</order-by>
+        <show>
+            version, 
+            instance, 
+            #RunningSoftware:HostedSoftware:Host:Host.hostname, 
+            #ContainedHost:HostContainment:HostContainer:Cluster AS "Cluster",
+            #ContainedHost:HostContainment:HostContainer:SoftwareInstance.#RunningSoftware:HostedSoftware:Host:Host.num_processors AS "Underlying Processors",
+            #RunningSoftware:HostedSoftware:Host:Host.num_processors as "Physical Processors",
+            #RunningSoftware:HostedSoftware:Host:Host.num_logical_processors as "Logical Proccessors", 
+            #RunningSoftware:HostedSoftware:Host:Host.cores_per_processor as "Cores",
+            #RunningSoftware:HostedSoftware:Host:Host.threads_per_core   AS "Threads-per-Core"   
+        </show>
+    </report>
+    
+    <report-channel name="Reports.Channel.OracleLicense">
+        <title>Oracle License Reports</title>
+        <description>Oracle License Reports</description>
+        <report>Lic.Report.OracleProcs</report>
+        <report>Lic.Report.WeblogicProcs</report>
+        <report>Lic.Report.SiebelProcs</report>
+    </report-channel>
+
+
+
+    <!--
+    #########################################################################
+
+        "Application Servers" CHANNEL
+
+    #########################################################################
+    -->
+
+    <report name="Appservers.Reports.AllInstances">
+        <title>All Application Server Instances</title>
+        <description>Show a list of all Application Server Instances</description>
+        <kind>SoftwareInstance</kind>
+        <where>
+               type HAS SUBWORD "Application Server"
+            OR type IN ["Microsoft IIS Service"]
+        </where>
+        <order-by>
+            type,
+            instance
+        </order-by>
+        <show>
+            type,
+            instance as "_|Identifier|_",
+            product_version,
+            version,
+            #:HostedSoftware:Host:Host.name AS "_|Host|_"
+        </show>
+    </report>
+
+   <report name="Appservers.Reports.Weblogic">
+        <title>Weblogic Instances</title>
+        <description>Show a list of Weblogic Instances</description>
+        <kind>SoftwareInstance</kind>
+        <where>type = "BEA WebLogic Application Server"</where>
+        <show>
+            type,
+            server_name as "_|Instance|_",
+            product_version,
+            version,
+            #:HostedSoftware:Host:Host.name AS "Host"
+        </show>
+    </report>
+
+    <report name="Appservers.Reports.JBoss">
+        <title>JBoss Instances</title>
+        <description>Show a list of JBoss Instances</description>
+        <kind>SoftwareInstance</kind>
+        <where>type = "RedHat JBoss Application Server"</where>
+        <show>
+            type,
+            instance as "_|Identifier|_",
+            product_version,
+            edition,
+            version,
+            #:HostedSoftware:Host:Host.name AS "_|Host|_"
+        </show>
+    </report>
+
+    <report name="Appservers.Reports.IISservice">
+        <title>IIS Server Instances</title>
+        <description>Show a list of IIS Server Instances</description>
+        <kind>SoftwareInstance</kind>
+        <where>type = "Microsoft IIS Service"</where>
+        <show>
+            type,
+            instance as "_|Identifier|_",
+            product_version,
+            edition,
+            version,
+            #:HostedSoftware:Host:Host.name AS "_|Host|_"
+        </show>
+    </report>
+
+    <report name="Appservers.Reports.Websphere">
+        <title>Websphere Instances</title>
+        <description>Show a list of Websphere Instances</description>
+        <kind>SoftwareInstance</kind>
+        <where>type = "IBM WebSphere Application Server"</where>
+        <show>
+            type,
+            product_version,
+            version,
+            #:HostedSoftware:Host:Host.name AS "_|Host|_"
+        </show>
+    </report>
+
+    <report name="Appservers.Reports.Tomcat">
+        <title>Tomcat Instances</title>
+        <description>Show a list of Tomcat Instances</description>
+        <kind>SoftwareInstance</kind>
+        <where>type = "Apache Tomcat Application Server"</where>
+        <show>
+            type,
+            instance as "_|Instance|_",
+            product_version,
+            version,
+            #:HostedSoftware:Host:Host.name AS "Host"
+        </show>
+    </report>
+
+   
+    <!-- ################ REPORT CHANNEL ############## -->
+
+    <report-channel name="Infrastructure.Channel.AppServers">
+        <title>Application Servers Reports</title>
+        <description>Shows a list of Application Server specific reports</description>
+        <report>Appservers.Reports.AllInstances</report>
+        <report indent="true">Appservers.Reports.Weblogic</report>
+        <report indent="true">Appservers.Reports.JBoss</report>
+        <report indent="true">Appservers.Reports.IISservice</report>
+        <report indent="true">Appservers.Reports.Websphere</report>
+        <report indent="true">Appservers.Reports.Tomcat</report>
+    </report-channel>
+
+    <!--
+    #########################################################################
+
+        "Weblogic Application Server" CHANNEL
+
+    #########################################################################
+    -->
+    <chart-multi-channel name="Channel.SWWeblogicVersion" default="column_nolegend">
+        <title>Weblogic Application Server Versions</title>
+        <description>
+            Product and Full version of all Weblogic Application Server instances.
+        </description>
+        <split>(product_version or 'Unknown') AS 'Version'</split>
+        <split>(version or 'Unknown')</split>
+        <kind>SoftwareInstance</kind>
+        <where>type='BEA WebLogic Application Server'</where>
+        <order-by>
+            product_version,
+            version
+        </order-by>
+        <show>
+            type,
+            name,
+            product_version,
+            version,
+            #:HostedSoftware:Host:Host.name AS 'Host'
+        </show>
+    </chart-multi-channel>
+
+    <!--
+    #########################################################################
+
+        "Websphere Application Server" CHANNEL
+
+    #########################################################################
+    -->
+    <chart-multi-channel name="Channel.SWWebsphereVersion" default="column_nolegend">
+        <title>Websphere Application Server Versions</title>
+        <description>
+            Product and Full version of all Websphere Application Server instances.
+        </description>
+        <split>(product_version or 'Unknown') AS 'Version'</split>
+        <split>(version or 'Unknown')</split>
+        <kind>SoftwareInstance</kind>
+        <where>type='IBM WebSphere Application Server'</where>
+        <order-by>
+            product_version,
+            version
+        </order-by>
+        <show>
+            type,
+            name,
+            product_version,
+            version,
+            #:HostedSoftware:Host:Host.name AS 'Host'
+        </show>
+    </chart-multi-channel>
+
+
+</reports>

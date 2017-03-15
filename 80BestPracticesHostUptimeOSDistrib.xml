@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+
+
+<!-- Warnings
+Report channel Reports.Channel.Optimize references report DCO.ReportsForCharts.SICategories not yet output - reordering
+-->
+
+<reports version="2.0">
+
+   
+
+
+    <!--
+###########################################
+#### Server Uptime Reports        ####
+###########################################-->
+
+    <chart-channel name="Channel.HostUptime" default="pie">
+        <title>Host Uptime</title>
+        <description>Host Uptime</description>
+        <split>(bin(int(#InferredElement:Inference:Primary:HostInfo.uptime), [60, 90],["Less than 60 Days","Between 60 and 90 Days","90 Days and more"]))</split>
+        <kind>Host</kind>
+        <where>
+        (host_type = 'Windows Server') OR (host_type = 'UNIX Server') OR (host_type = 'Hypervisor')
+		</where>
+        <order-by>
+		name
+		</order-by>
+        <show>
+            name,
+            os,
+            #InferredElement:Inference:Primary:HostInfo.uptime, bin(int(#InferredElement:Inference:Primary:HostInfo.uptime), [60, 90, 180]) as 'Time Since Last Reboot'
+        </show>
+    </chart-channel>
+
+    <chart-multi-channel name="Channel.OSDistrVersion" default="column_nolegend">
+        <title>Operating Systems Distribution</title>
+        <description>
+            Operating Systems Distribution Numbers and Version
+        </description>
+        <split>os_type</split>
+        <split>(os_version or 'Unknown')</split>
+        <kind>Host</kind>
+        <where>
+            (host_type = 'Windows Server') OR (host_type = 'UNIX Server') OR (host_type = 'Hypervisor')
+        </where>
+        <show>
+		    name,
+            host_type,
+            os_class,
+            os_type,
+            os_version,
+            os_edition,
+            ((virtual AND 'Virtual') OR 'Not Virtual') AS 'Virtual',
+            (vendor OR 'Not Discovered') AS 'Vendor',
+            (model OR 'Not Discovered') AS 'Model',
+            (ram OR 'Not Discovered') AS 'RAM',
+            (num_processors OR 'Not Discovered') AS 'Physical CPU',
+            (num_logical_processors OR 'Not Discovered') AS 'Logical CPU',
+            (processor_speed OR 'Not Discovered') AS 'CPU MHz',
+            (processor_type OR 'Not Discovered') AS 'CPU Type',
+            join((#OwnedItem:Ownership::Person.name OR 'None Linked'), ', ') AS 'Host Owner',
+            join((#ElementInLocation:Location:Location:Location.name OR 'None Linked'), ', ') AS 'Location',
+            join((#Host:HostedSoftware:AggregateSoftware:BusinessApplicationInstance.name OR 'None Linked'), ', ') AS 'Applications',
+            join((#InferredElement:Inference:Associate:DiscoveryAccess.endpoint OR 'DDD Aged Out'), ', ') AS 'Scanned Via'
+		</show>
+    </chart-multi-channel>
+
+
+	
+    <!-- SetupHome channels are configured dynamically from the loaded
+         modules. Any definition here will be ignored!
+      -->
+</reports>
